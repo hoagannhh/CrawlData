@@ -1,0 +1,62 @@
+=======================================================
+  BƯỚC 4 — LLM PRE-ANNOTATION (Ollama / local)
+=======================================================
+  Host  : http://localhost:11434
+  Model : qwen2.5:7b
+
+  Kiểm tra Ollama server... OK
+  Kiểm tra model qwen2.5:7b... OK
+  Test inference... OK
+
+  Đã chọn 5,000 câu y tế từ corpus_clean.jsonl
+    thuocbietduoc           5,000
+
+  Resume: 11/5,000 đã xong, còn 4,989 câu
+  Không giới hạn — chạy đến hết (Ctrl+C để dừng, lần sau tự tiếp)
+
+  [   12/5000]  ETA 83m  OK  2 entity
+  [   13/5000]  ETA 2643m  OK  0 entity
+  [   14/5000]  ETA 2260m  OK  3 entity
+  [   15/5000]  ETA 2476m  OK  3 entity
+  [   16/5000]  ETA 2679m  OK  2 entity
+  [   17/5000]  ETA 2775m  OK  1 entity
+  [   18/5000]  ETA 2665m  OK  0 entity
+  [   19/5000]  ETA 2516m  OK  2 entity
+  [   20/5000]  ETA 2505m  OK  3 entity
+  [   21/5000]  ETA 2523m  OK  2 entity
+  [   22/5000]  ETA 2551m  OK  0 entity
+  [   23/5000]  ETA 2461m  OK  2 entity
+  [   24/5000]  ETA 2490m  OK  0 entity
+  [   25/5000]  ETA 2441m  OK  0 entity
+  [   26/5000]  ETA 2381m  OK  0 entity
+  [   27/5000]  ETA 2324m  OK  1 entity
+  [   28/5000]  ETA 2306m  OK  0 entity
+  [   29/5000]  ETA 2264m  OK  0 entity
+  [   30/5000]  ETA 2222m  OK  0 entity
+  [   31/5000]  ETA 2189m  OK  1 entity
+  [   32/5000]  ETA 2227m  OK  0 entity
+  [   33/5000]  ETA 2199m  OK  7 entity
+  [   34/5000]  ETA 2418m  OK  5 entity
+  [   35/5000]  ETA 2523m  OK  2 entity
+  [   36/5000]  ETA 2547m  OK  2 entity
+  [   37/5000]  ETA 2573m  OK  9 entity
+  [   38/5000]  ETA 3068m  OK  6 entity
+  [   39/5000]  ETA 3268m  OK  1 entity
+  [   40/5000]  ETA 3319m  OK  0 entity
+  [   41/5000]  ETA 3357m  OK  0 entity
+  [   42/5000]  ETA 3299m  OK  2 entity
+  [   43/5000]  ETA 3287m  OK  2 entity
+  [   44/5000]  ETA 3266m  OK  1 entity
+  [   45/5000]  ETA 3250m  OK  5 entity
+  [   46/5000]  ETA 3361m  OK  4 entity
+  [   47/5000]  ETA 3385m  OK  1 entity
+  [   48/5000]  ETA 3346m  OK  0 entity
+  [   49/5000]  ETA 3305m  OK  0 entity
+  [   50/5000]  ETA 3262m  OK  2 entity
+  [   51/5000]  ETA 3411m  OK  4 entity
+  [   52/5000]  ETA 3486m  OK  1 entity
+  [   53/5000]  ETA 3547m  OK  0 entity
+  [   54/5000]  ETA 3620m  OK  0 entity
+  [   55/5000]  ETA 3573m  OK  5 entity
+  [   56/5000]  ETA 3587m  OK  0 entity
+  [   57/5000]  ETA 3546m  

@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gán nhãn y tế</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f6f8;
+      color: #1a1a1a;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #1e3a5f;
+      color: #fff;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    header h1 { margin: 0; font-size: 1.1rem; font-weight: 600; }
+    .stats { font-size: 0.85rem; opacity: 0.9; }
+    .toolbar { display: flex; gap: 8px; align-items: center; margin-left: auto; flex-wrap: wrap; }
+    button, select, input, textarea {
+      font: inherit;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+    }
+    button {
+      cursor: pointer;
+      background: #fff;
+    }
+    button:hover { background: #eef2f7; }
+    button.primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+    button.primary:hover { background: #1d4ed8; }
+    button.danger { color: #b91c1c; border-color: #fca5a5; }
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 0;
+      overflow: hidden;
+    }
+    aside {
+      background: #fff;
+      border-right: 1px solid #dde3ea;
+      overflow-y: auto;
+      padding: 12px;
+    }
+    aside h2 { margin: 0 0 8px; font-size: 0.95rem; }
+    .schema-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+    }
+    .schema-item .name {
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .color-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .badge {
+      font-size: 0.7rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+    }
+    .badge.nested { background: #dbeafe; color: #1e40af; }
+    .content {
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #dde3ea;
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .card h3 { margin: 0 0 10px; font-size: 0.9rem; color: #475569; }
+    #sentence-text {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      padding: 12px;
+      background: #fafbfc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      user-select: text;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .ent-mark {
+      border-radius: 3px;
+      padding: 1px 0;
+      cursor: pointer;
+    }
+    .ent-mark.active { outline: 2px solid #1e3a5f; outline-offset: 1px; }
+    .ent-mark.suggested { border-bottom: 2px dashed currentColor; opacity: 0.75; }
+    .entity-list { display: flex; flex-direction: column; gap: 6px; }
+    .entity-row {
+      display: grid;
+      grid-template-columns: 100px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: 6px;
+      background: #f8fafc;
+      font-size: 0.85rem;
+    }
+    .entity-row.suggested { border-left: 3px solid #f59e0b; }
+    .entity-row.confirmed { border-left: 3px solid #22c55e; }
+    .entity-row .actions { display: flex; gap: 4px; flex-wrap: wrap; }
+    .entity-row button { padding: 3px 7px; font-size: 0.78rem; }
+    .meta { font-size: 0.8rem; color: #64748b; }
+    .add-form {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      width: min(420px, 92vw);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .modal label { font-size: 0.85rem; font-weight: 600; }
+    .modal input, .modal textarea, .modal select { width: 100%; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .empty { color: #94a3b8; font-style: italic; font-size: 0.85rem; }
+    .shortcut-hint { font-size: 0.75rem; color: #94a3b8; margin-top: 6px; }
+    .ollama-status {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; padding: 4px 10px;
+      background: rgba(255,255,255,0.12); border-radius: 999px;
+    }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #94a3b8;
+    }
+    .status-dot.ok { background: #4ade80; }
+    .status-dot.warn { background: #fbbf24; }
+    .status-dot.err { background: #f87171; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    .card-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .card-header h3 { margin: 0; flex: 1; }
+    @media (max-width: 800px) {
+      main { grid-template-columns: 1fr; }
+      aside { max-height: 220px; border-right: none; border-bottom: 1px solid #dde3ea; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gán nhãn y tế</h1>
+    <span class="stats" id="stats">...</span>
+    <span class="ollama-status" id="ollama-status" title="Ollama / LLM">
+      <span class="status-dot" id="ollama-dot"></span>
+      <span id="ollama-label">Ollama...</span>
+    </span>
+    <div class="toolbar">
+      <select id="filter">
+        <option value="all">Tất cả</option>
+        <option value="pending" selected>Chưa duyệt</option>
+        <option value="reviewed">Đã duyệt</option>
+        <option value="no_llm">Chưa có gợi ý LLM</option>
+      </select>
+      <button id="btn-prev">← Trước</button>
+      <span id="pos-label">-/-</span>
+      <button id="btn-next">Sau →</button>
+      <button id="btn-save" class="primary">Lưu &amp; tiếp</button>
+      <button id="btn-save-stay">Lưu</button>
+    </div>
+  </header>
+
+  <main>
+    <aside>
+      <h2>Bộ nhãn (schema)</h2>
+      <button id="btn-add-schema" style="width:100%;margin-bottom:10px;">+ Thêm nhãn</button>
+      <div id="schema-list"></div>
+    </aside>
+
+    <div class="content">
+      <div class="card">
+        <div class="meta" id="sentence-meta"></div>
+        <div id="sentence-text"></div>
+        <p class="shortcut-hint">Bôi đen đoạn text → chọn nhãn → Thêm. Click entity để sửa/xóa.</p>
+        <div class="add-form">
+          <span>Đã chọn: <strong id="selection-preview">—</strong></span>
+          <select id="new-type"></select>
+          <button id="btn-add-entity">Thêm nhãn</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Gợi ý từ LLM</h3>
+          <button id="btn-suggest-llm" class="primary">Gợi ý LLM</button>
+          <button id="btn-accept-all">Chấp nhận tất cả</button>
+        </div>
+        <p class="shortcut-hint" id="llm-hint">Dùng schema bên trái làm prompt. Ctrl+L = gợi ý lại câu này.</p>
+        <div id="suggested-list" class="entity-list"></div>
+      </div>
+
+      <div class="card">
+        <h3>Nhãn đã xác nhận</h3>
+        <div id="confirmed-list" class="entity-list"></div>
+      </div>
+
+      <div class="card">
+        <h3>Ghi chú</h3>
+        <textarea id="notes" rows="2" style="width:100%;" placeholder="Ghi chú tùy chọn..."></textarea>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="schema-modal">
+    <div class="modal">
+      <h3 id="schema-modal-title">Sửa nhãn</h3>
+      <label>Tên (UPPER_SNAKE)</label>
+      <input id="sm-name">
+      <label>Cấp</label>
+      <select id="sm-level">
+        <option value="flat">flat</option>
+        <option value="nested">nested</option>
+      </select>
+      <label>Mô tả</label>
+      <textarea id="sm-desc" rows="2"></textarea>
+      <label>Ví dụ (phẩy)</label>
+      <input id="sm-examples">
+      <label>Chứa (nested, phẩy)</label>
+      <input id="sm-contains">
+      <label>Màu</label>
+      <input id="sm-color" type="color">
+      <div class="modal-actions">
+        <button id="sm-cancel">Hủy</button>
+        <button id="sm-save" class="primary">Lưu nhãn</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const state = {
+  schema: { types: [] },
+  ids: [],
+  index: 0,
+  current: null,
+  confirmed: [],
+  suggested: [],
+  activeEnt: null,
+  schemaEditIndex: -1,
+  ollama: null,
+  suggesting: false,
+};
+
+const $ = (id) => document.getElementById(id);
+
+function typeColor(name) {
+  const t = state.schema.types.find(x => x.name === name);
+  return t ? t.color : '#64748b';
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || res.statusText);
+  return data;
+}
+
+async function loadSchema() {
+  state.schema = await api('/api/schema');
+  renderSchema();
+  fillTypeSelect();
+}
+
+async function loadStats() {
+  const s = await api('/api/stats');
+  $('stats').textContent =
+    `Đã duyệt ${s.reviewed}/${s.total} · Còn ${s.pending} · LLM ${s.with_llm}/${s.total}`;
+}
+
+async function loadOllamaStatus() {
+  try {
+    state.ollama = await api('/api/ollama/status');
+  } catch {
+    state.ollama = { online: false, model_ready: false };
+  }
+  const dot = $('ollama-dot');
+  const label = $('ollama-label');
+  dot.className = 'status-dot';
+  if (state.ollama.online && state.ollama.model_ready) {
+    dot.classList.add('ok');
+    label.textContent = state.ollama.model;
+  } else if (state.ollama.online) {
+    dot.classList.add('warn');
+    label.textContent = 'Thiếu model';
+  } else {
+    dot.classList.add('err');
+    label.textContent = 'Ollama offline';
+  }
+  $('btn-suggest-llm').disabled = !(state.ollama.online && state.ollama.model_ready) || state.suggesting;
+}
+
+async function loadIds() {
+  const filter = $('filter').value;
+  const data = await api(`/api/sentences?filter=${filter}`);
+  state.ids = data.ids;
+  if (state.index >= state.ids.length) state.index = Math.max(0, state.ids.length - 1);
+  updatePosLabel();
+}
+
+async function loadSentence() {
+  if (!state.ids.length) {
+    $('sentence-text').innerHTML = '<span class="empty">Không có câu nào.</span>';
+    return;
+  }
+  const id = state.ids[state.index];
+  state.current = await api(`/api/sentence/${id}`);
+  state.confirmed = [...(state.current.entities || [])];
+  state.suggested = diffSuggested(state.current.llm_entities || [], state.confirmed);
+  $('notes').value = state.current.notes || '';
+  const llmInfo = state.current.llm_model ? ` · LLM: ${state.current.llm_model}` : '';
+  $('sentence-meta').textContent =
+    `ID: ${state.current.id} · Nguồn: ${state.current.source || '—'} · ` +
+    (state.current.reviewed ? 'Đã duyệt' : 'Chưa duyệt') + llmInfo;
+  renderSentence();
+  renderEntityLists();
+  updatePosLabel();
+}
+
+function entityKey(e) {
+  return `${e.start}:${e.end}:${e.type}`;
+}
+
+function diffSuggested(llm, confirmed) {
+  const keys = new Set(confirmed.map(entityKey));
+  return llm.filter(e => !keys.has(entityKey(e)));
+}
+
+function updatePosLabel() {
+  const n = state.ids.length;
+  $('pos-label').textContent = n ? `${state.index + 1}/${n}` : '0/0';
+}
+
+function renderSchema() {
+  const box = $('schema-list');
+  box.innerHTML = '';
+  state.schema.types.forEach((t, i) => {
+    const div = document.createElement('div');
+    div.className = 'schema-item';
+    div.innerHTML = `
+      <div class="name">
+        <span class="color-dot" style="background:${t.color}"></span>
+        ${t.name}
+        <span class="badge ${t.level}">${t.level}</span>
+      </div>
+      <div>${t.description || ''}</div>
+      <div style="margin-top:6px;display:flex;gap:4px;">
+        <button data-i="${i}" class="btn-edit-schema">Sửa</button>
+        <button data-i="${i}" class="btn-del-schema danger">Xóa</button>
+      </div>`;
+    box.appendChild(div);
+  });
+  box.querySelectorAll('.btn-edit-schema').forEach(btn => {
+    btn.onclick = () => openSchemaModal(+btn.dataset.i);
+  });
+  box.querySelectorAll('.btn-del-schema').forEach(btn => {
+    btn.onclick = () => deleteSchema(+btn.dataset.i);
+  });
+}
+
+function fillTypeSelect() {
+  const sel = $('new-type');
+  sel.innerHTML = state.schema.types.map(t =>
+    `<option value="${t.name}">${t.name}</option>`
+  ).join('');
+}
+
+function renderSentence() {
+  const text = state.current.text;
+  const all = [
+    ...state.confirmed.map(e => ({ ...e, kind: 'confirmed' })),
+    ...state.suggested.map(e => ({ ...e, kind: 'suggested' })),
+  ].sort((a, b) => a.start - b.start || b.end - a.end);
+
+  // Simple non-overlap render: show confirmed first, then suggested for gaps
+  const used = new Array(text.length).fill(null);
+  const marks = [];
+
+  for (const ent of all) {
+    let overlap = false;
+    for (let i = ent.start; i < ent.end; i++) {
+      if (used[i]) { overlap = true; break; }
+    }
+    if (!overlap) {
+      for (let i = ent.start; i < ent.end; i++) used[i] = ent;
+      marks.push(ent);
+    }
+  }
+  marks.sort((a, b) => a.start - b.start);
+
+  let html = '';
+  let pos = 0;
+  for (const ent of marks) {
+    if (ent.start > pos) html += esc(text.slice(pos, ent.start));
+    const cls = `ent-mark ${ent.kind}` + (state.activeEnt && entityKey(state.activeEnt) === entityKey(ent) ? ' active' : '');
+    html += `<span class="${cls}" style="background:${typeColor(ent.type)}33;color:${typeColor(ent.type)}"
+      data-key="${entityKey(ent)}" title="${ent.type}">${esc(text.slice(ent.start, ent.end))}</span>`;
+    pos = ent.end;
+  }
+  if (pos < text.length) html += esc(text.slice(pos));
+  $('sentence-text').innerHTML = html;
+
+  $('sentence-text').querySelectorAll('.ent-mark').forEach(el => {
+    el.onclick = () => {
+      const key = el.dataset.key;
+      const ent = [...state.confirmed, ...state.suggested].find(e => entityKey(e) === key);
+      state.activeEnt = ent;
+      renderSentence();
+    };
+  });
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderEntityLists() {
+  const sug = $('suggested-list');
+  const conf = $('confirmed-list');
+  sug.innerHTML = state.suggested.length ? '' :
+    '<div class="empty">Chưa có gợi ý — bấm <strong>Gợi ý LLM</strong> (cần Ollama).</div>';
+  conf.innerHTML = state.confirmed.length ? '' : '<div class="empty">Chưa có nhãn xác nhận.</div>';
+
+  state.suggested.forEach((e, i) => {
+    sug.appendChild(entityRow(e, 'suggested', [
+      { label: 'Chấp nhận', action: () => acceptSuggested(i) },
+      { label: 'Sửa', action: () => editEntity(e, 'suggested', i) },
+      { label: 'Bỏ', action: () => { state.suggested.splice(i, 1); renderAll(); }, danger: true },
+    ]));
+  });
+
+  state.confirmed.forEach((e, i) => {
+    conf.appendChild(entityRow(e, 'confirmed', [
+      { label: 'Sửa', action: () => editEntity(e, 'confirmed', i) },
+      { label: 'Xóa', action: () => { state.confirmed.splice(i, 1); state.suggested = diffSuggested(state.current.llm_entities || [], state.confirmed); renderAll(); }, danger: true },
+    ]));
+  });
+}
+
+function entityRow(e, kind, buttons) {
+  const row = document.createElement('div');
+  row.className = `entity-row ${kind}`;
+  row.innerHTML = `
+    <span style="color:${typeColor(e.type)};font-weight:600;">${e.type}</span>
+    <span>"${esc(e.text)}" <span class="meta">[${e.start}:${e.end}]</span></span>
+    <span class="actions"></span>`;
+  const actions = row.querySelector('.actions');
+  buttons.forEach(b => {
+    const btn = document.createElement('button');
+    btn.textContent = b.label;
+    if (b.danger) btn.className = 'danger';
+    btn.onclick = b.action;
+    actions.appendChild(btn);
+  });
+  return row;
+}
+
+function renderAll() {
+  renderSentence();
+  renderEntityLists();
+}
+
+function getSelectionInSentence() {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed || !sel.rangeCount) return null;
+  const range = sel.getRangeAt(0);
+  const container = $('sentence-text');
+  if (!container.contains(range.commonAncestorContainer)) return null;
+
+  const pre = document.createRange();
+  pre.selectNodeContents(container);
+  pre.setEnd(range.startContainer, range.startOffset);
+  const start = pre.toString().length;
+
+  const text = sel.toString();
+  if (!text.trim()) return null;
+  return { start, end: start + text.length, text };
+}
+
+function addEntityFromSelection() {
+  const sel = getSelectionInSentence();
+  if (!sel) { alert('Hãy bôi đen đoạn text trong câu.'); return; }
+  const type = $('new-type').value;
+  const full = state.current.text;
+  const snippet = full.slice(sel.start, sel.end);
+  state.confirmed.push({ start: sel.start, end: sel.end, type, text: snippet });
+  state.suggested = diffSuggested(state.current.llm_entities || [], state.confirmed);
+  window.getSelection().removeAllRanges();
+  renderAll();
+}
+
+function acceptSuggested(i) {
+  const e = state.suggested.splice(i, 1)[0];
+  state.confirmed.push(e);
+  state.confirmed.sort((a, b) => a.start - b.start || a.end - b.end);
+  renderAll();
+}
+
+function acceptAllSuggested() {
+  state.confirmed.push(...state.suggested);
+  state.confirmed.sort((a, b) => a.start - b.start || a.end - b.end);
+  state.suggested = [];
+  renderAll();
+}
+
+function editEntity(ent, list, index) {
+  const newType = prompt('Nhãn mới:', ent.type);
+  if (!newType) return;
+  const upper = newType.trim().toUpperCase().replace(/ /g, '_');
+  if (!state.schema.types.find(t => t.name === upper)) {
+    alert('Nhãn không có trong schema. Thêm vào schema trước.');
+    return;
+  }
+  ent.type = upper;
+  if (list === 'suggested') state.suggested[index] = ent;
+  else state.confirmed[index] = ent;
+  renderAll();
+}
+
+async function suggestLlm() {
+  if (!state.current || state.suggesting) return;
+  state.suggesting = true;
+  $('btn-suggest-llm').disabled = true;
+  $('btn-suggest-llm').textContent = 'Đang gọi LLM...';
+  $('llm-hint').textContent = 'Ollama đang xử lý câu này (~10–60 giây)...';
+  try {
+    const data = await api(`/api/sentence/${state.current.id}/suggest`, { method: 'POST' });
+    state.current.llm_entities = data.llm_entities || [];
+    state.current.llm_model = data.llm_model;
+    state.suggested = diffSuggested(state.current.llm_entities, state.confirmed);
+    const llmInfo = state.current.llm_model ? ` · LLM: ${state.current.llm_model}` : '';
+    $('sentence-meta').textContent =
+      `ID: ${state.current.id} · Nguồn: ${state.current.source || '—'} · ` +
+      (state.current.reviewed ? 'Đã duyệt' : 'Chưa duyệt') + llmInfo;
+    renderAll();
+    await loadStats();
+  } catch (e) {
+    alert(e.message || 'Lỗi gọi LLM');
+    await loadOllamaStatus();
+  } finally {
+    state.suggesting = false;
+    $('btn-suggest-llm').textContent = 'Gợi ý LLM';
+    $('llm-hint').textContent = 'Dùng schema bên trái làm prompt. Ctrl+L = gợi ý lại câu này.';
+    await loadOllamaStatus();
+  }
+}
+
+async function saveSentence(advance) {
+  if (!state.current) return;
+  const id = state.current.id;
+  await api(`/api/sentence/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      entities: state.confirmed,
+      llm_entities: state.current.llm_entities,
+      reviewed: true,
+      notes: $('notes').value,
+    }),
+  });
+  await loadStats();
+  if (advance) {
+    if (state.index < state.ids.length - 1) {
+      state.index++;
+      await loadSentence();
+    } else {
+      await loadIds();
+      await loadSentence();
+    }
+  } else {
+    state.current.reviewed = true;
+    $('sentence-meta').textContent =
+      `ID: ${state.current.id} · Nguồn: ${state.current.source || '—'} · Đã duyệt`;
+  }
+}
+
+function openSchemaModal(index) {
+  state.schemaEditIndex = index;
+  const t = index >= 0 ? state.schema.types[index] : {
+    name: '', level: 'flat', description: '', examples: [], can_contain: [], color: '#3498db'
+  };
+  $('schema-modal-title').textContent = index >= 0 ? 'Sửa nhãn' : 'Thêm nhãn';
+  $('sm-name').value = t.name;
+  $('sm-name').disabled = index >= 0;
+  $('sm-level').value = t.level;
+  $('sm-desc').value = t.description || '';
+  $('sm-examples').value = (t.examples || []).join(', ');
+  $('sm-contains').value = (t.can_contain || []).join(', ');
+  $('sm-color').value = t.color || '#3498db';
+  $('schema-modal').classList.add('open');
+}
+
+function closeSchemaModal() {
+  $('schema-modal').classList.remove('open');
+  state.schemaEditIndex = -1;
+}
+
+async function saveSchemaModal() {
+  const name = $('sm-name').value.trim().toUpperCase().replace(/ /g, '_');
+  if (!name) { alert('Tên nhãn không được trống'); return; }
+  const entry = {
+    name,
+    level: $('sm-level').value,
+    description: $('sm-desc').value.trim(),
+    examples: $('sm-examples').value.split(',').map(s => s.trim()).filter(Boolean),
+    can_contain: $('sm-contains').value.split(',').map(s => s.trim()).filter(Boolean),
+    color: $('sm-color').value,
+  };
+  const types = [...state.schema.types];
+  if (state.schemaEditIndex >= 0) types[state.schemaEditIndex] = entry;
+  else types.push(entry);
+
+  state.schema = await api('/api/schema', {
+    method: 'PUT',
+    body: JSON.stringify({ types }),
+  });
+  closeSchemaModal();
+  renderSchema();
+  fillTypeSelect();
+}
+
+async function deleteSchema(index) {
+  const t = state.schema.types[index];
+  if (!confirm(`Xóa nhãn "${t.name}"?`)) return;
+  const types = state.schema.types.filter((_, i) => i !== index);
+  state.schema = await api('/api/schema', {
+    method: 'PUT',
+    body: JSON.stringify({ types }),
+  });
+  renderSchema();
+  fillTypeSelect();
+}
+
+document.addEventListener('selectionchange', () => {
+  const sel = getSelectionInSentence();
+  $('selection-preview').textContent = sel ? `"${sel.text}"` : '—';
+});
+
+$('btn-prev').onclick = async () => {
+  if (state.index > 0) { state.index--; await loadSentence(); }
+};
+$('btn-next').onclick = async () => {
+  if (state.index < state.ids.length - 1) { state.index++; await loadSentence(); }
+};
+$('filter').onchange = async () => {
+  state.index = 0;
+  await loadIds();
+  await loadSentence();
+};
+$('btn-add-entity').onclick = addEntityFromSelection;
+$('btn-accept-all').onclick = acceptAllSuggested;
+$('btn-suggest-llm').onclick = suggestLlm;
+$('btn-save').onclick = () => saveSentence(true);
+$('btn-save-stay').onclick = () => saveSentence(false);
+$('btn-add-schema').onclick = () => openSchemaModal(-1);
+$('sm-cancel').onclick = closeSchemaModal;
+$('sm-save').onclick = saveSchemaModal;
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowLeft') $('btn-prev').click();
+  if (e.key === 'ArrowRight') $('btn-next').click();
+  if (e.key === 's' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveSentence(false); }
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveSentence(true); }
+  if (e.key === 'l' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); suggestLlm(); }
+});
+
+(async function init() {
+  await loadSchema();
+  await loadOllamaStatus();
+  await loadStats();
+  await loadIds();
+  await loadSentence();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+2026-05-22 20:37:35 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
+2026-05-22 20:37:35 | INFO     | main | Các nguồn sẽ chạy: ['longchau']
+2026-05-22 20:37:35 | INFO     | main | ==================================================
+2026-05-22 20:37:35 | INFO     | main | Bắt đầu nguồn: longchau
+2026-05-22 20:37:35 | INFO     | main | ==================================================
+2026-05-22 20:37:35 | INFO     | spider.longchau | LongChau Optimized Spider (max_pages=5)
+2026-05-22 20:37:35 | INFO     | spider.longchau | Bước 1: Thu thập SKU codes từ category pages...
+2026-05-22 20:37:36 | INFO     | spider.longchau | [1/18] thuoc-tim-mach-and-mau
+2026-05-22 20:37:41 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 12
+2026-05-22 20:37:41 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 12
+2026-05-22 20:37:43 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 12
+2026-05-22 20:37:45 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 12
+2026-05-22 20:37:45 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:37:45 | INFO     | spider.longchau | [2/18] thuoc-tieu-hoa-and-gan-ma
+2026-05-22 20:37:49 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 24
+2026-05-22 20:37:51 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 24
+2026-05-22 20:37:53 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 24
+2026-05-22 20:37:56 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 24
+2026-05-22 20:37:56 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:37:56 | INFO     | spider.longchau | [3/18] thuoc-khang-sinh-khang-na
+2026-05-22 20:37:59 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 36
+2026-05-22 20:38:01 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 36
+2026-05-22 20:38:03 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 36
+2026-05-22 20:38:05 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 36
+2026-05-22 20:38:05 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:38:05 | INFO     | spider.longchau | [4/18] thuoc-ho-hap
+2026-05-22 20:38:09 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 48
+2026-05-22 20:38:12 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 48
+2026-05-22 20:38:11 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 48
+2026-05-22 20:38:13 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 48
+2026-05-22 20:38:13 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:38:13 | INFO     | spider.longchau | [5/18] thuoc-than-kinh
+2026-05-22 20:38:18 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 60
+2026-05-22 20:38:20 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 60
+2026-05-22 20:38:22 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 60
+2026-05-22 20:38:24 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 60
+2026-05-22 20:38:24 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:38:24 | INFO     | spider.longchau | [6/18] thuoc-giam-dau-ha-sot-kha
+2026-05-22 20:38:27 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 72
+2026-05-22 20:38:29 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 72
+2026-05-22 20:38:32 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 72
+2026-05-22 20:38:34 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 72
+2026-05-22 20:38:34 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:38:34 | INFO     | spider.longchau | [7/18] thuoc-mat-tai-mui-hong
+2026-05-22 20:38:38 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 84
+2026-05-22 20:38:40 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 84
+2026-05-22 20:38:42 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 84
+2026-05-22 20:38:42 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 84
+2026-05-22 20:38:42 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:38:42 | INFO     | spider.longchau | [8/18] thuoc-tiet-nieu-sinh-duc
+2026-05-22 20:38:45 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 96
+2026-05-22 20:38:48 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 96
+2026-05-22 20:38:50 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 96
+2026-05-22 20:38:52 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 96
+2026-05-22 20:38:52 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:38:52 | INFO     | spider.longchau | [9/18] thuoc-bo-and-vitamin
+2026-05-22 20:38:56 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 108
+2026-05-22 20:38:58 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 108
+2026-05-22 20:39:00 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 108
+2026-05-22 20:39:03 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 108
+2026-05-22 20:39:03 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:39:03 | INFO     | spider.longchau | [10/18] thuoc-ung-thu
+2026-05-22 20:39:06 | INFO     | spider.longchau |   Scroll 1: 0 SKUs trên trang | +0 new | Total: 108
+2026-05-22 20:39:08 | INFO     | spider.longchau |   Scroll 2: 0 SKUs trên trang | +0 new | Total: 108
+2026-05-22 20:39:10 | INFO     | spider.longchau |   Scroll 3: 0 SKUs trên trang | +0 new | Total: 108
+2026-05-22 20:39:10 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:39:10 | INFO     | spider.longchau | [11/18] thuoc-co-xuong-khop
+2026-05-22 20:39:11 | INFO     | spider.longchau |   Scroll 1: 0 SKUs trên trang | +0 new | Total: 108
+2026-05-22 20:39:13 | INFO     | spider.longchau |   Scroll 2: 0 SKUs trên trang | +0 new | Total: 108
+2026-05-22 20:39:16 | INFO     | spider.longchau |   Scroll 3: 0 SKUs trên trang | +0 new | Total: 108
+2026-05-22 20:39:16 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:39:16 | INFO     | spider.longchau | [12/18] thuoc-da-lieu
+2026-05-22 20:39:20 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 120
+2026-05-22 20:39:22 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 120
+2026-05-22 20:39:24 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 120
+2026-05-22 20:39:27 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 120
+2026-05-22 20:39:27 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:39:27 | INFO     | spider.longchau | [13/18] thuoc-tri-tieu-duong
+2026-05-22 20:39:30 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 132
+2026-05-22 20:39:33 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 132
+2026-05-22 20:39:35 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 132
+2026-05-22 20:39:37 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 132
+2026-05-22 20:39:37 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:39:37 | INFO     | spider.longchau | [14/18] thuoc-tiem-chich-and-dich
+2026-05-22 20:39:41 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 144
+2026-05-22 20:39:41 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 144
+2026-05-22 20:39:43 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 144
+2026-05-22 20:39:45 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 144
+2026-05-22 20:39:45 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:39:45 | INFO     | spider.longchau | [15/18] thuoc-di-ung
+2026-05-22 20:39:49 | INFO     | spider.longchau |   Scroll 1: 12 SKUs trên trang | +12 new | Total: 156
+2026-05-22 20:39:51 | INFO     | spider.longchau |   Scroll 2: 12 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:39:53 | INFO     | spider.longchau |   Scroll 3: 12 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:39:56 | INFO     | spider.longchau |   Scroll 4: 12 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:39:56 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:39:56 | INFO     | spider.longchau | [16/18] thuoc-trang-tri-soc
+2026-05-22 20:39:59 | INFO     | spider.longchau |   Scroll 1: 0 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:40:01 | INFO     | spider.longchau |   Scroll 2: 0 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:40:03 | INFO     | spider.longchau |   Scroll 3: 0 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:40:03 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:40:03 | INFO     | spider.longchau | [17/18] thuoc-ho-sot
+2026-05-22 20:40:07 | INFO     | spider.longchau |   Scroll 1: 0 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:40:09 | INFO     | spider.longchau |   Scroll 2: 0 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:40:11 | INFO     | spider.longchau |   Scroll 3: 0 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:40:11 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:40:11 | INFO     | spider.longchau | [18/18] thuoc-ung-thu-hoa-tri
+2026-05-22 20:40:12 | INFO     | spider.longchau |   Scroll 1: 0 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:40:14 | INFO     | spider.longchau |   Scroll 2: 0 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:40:16 | INFO     | spider.longchau |   Scroll 3: 0 SKUs trên trang | +0 new | Total: 156
+2026-05-22 20:40:16 | INFO     | spider.longchau |   → Không có SKU mới, sang category tiếp.
+2026-05-22 20:40:16 | INFO     | spider.longchau | Tổng SKU codes: 156
+2026-05-22 20:40:16 | INFO     | spider.longchau | Bước 2: Lấy slugs từ batch API...
+2026-05-22 20:40:24 | INFO     | spider.longchau | Slugs lấy được: 156
+2026-05-22 20:40:24 | INFO     | spider.longchau | Total product URLs: 156
+2026-05-22 20:40:24 | INFO     | spider.longchau | Tổng 156 URL | Mới: 31 | Đã cào: 133
+2026-05-22 20:40:25 | INFO     | spider.longchau | Khởi động Selenium driver dùng chung...
+longchau:   0%|          | 0/31 [00:00<?, ?it/s]longchau:   3%|▎         | 1/31 [00:06<03:16,  6.55s/it]longchau:   6%|▋         | 2/31 [00:10<02:28,  5.11s/it]longchau:  10%|▉         | 3/31 [00:15<02:13,  4.78s/it]longchau:  13%|█▎        | 4/31 [00:16<01:37,  3.63s/it]longchau:  16%|█▌        | 5/31 [00:21<01:41,  3.89s/it]longchau:  19%|█▉        | 6/31 [00:25<01:41,  4.05s/it]longchau:  23%|██▎       | 7/31 [00:29<01:33,  3.89s/it]longchau:  26%|██▌       | 8/31 [00:33<01:33,  4.05s/it]longchau:  29%|██▉       | 9/31 [00:38<01:31,  4.18s/it]longchau:  32%|███▏      | 10/31 [00:42<01:27,  4.16s/it]longchau:  35%|███▌      | 11/31 [00:46<01:23,  4.19s/it]longchau:  39%|███▊      | 12/31 [00:48<01:05,  3.43s/it]longchau:  42%|████▏     | 13/31 [00:51<01:02,  3.47s/it]longchau:  45%|████▌     | 14/31 [00:56<01:04,  3.78s/it]longchau:  48%|████▊     | 15/31 [00:59<00:59,  3.71s/it]longchau:  52%|█████▏    | 16/31 [01:04<00:59,  4.00s/it]longchau:  55%|█████▍    | 17/31 [01:08<00:56,  4.06s/it]longchau:  58%|█████▊    | 18/31 [01:12<00:52,  4.02s/it]longchau:  61%|██████▏   | 19/31 [01:16<00:47,  3.96s/it]2026-05-22 20:41:43 | INFO     | file_handler | Saved 20 records → /home/hoanganh/workspace/CrawlData/data/checkpoint/longchau_batch_0001.json
+2026-05-22 20:41:43 | INFO     | spider.longchau | Checkpoint 1: 20 records
+longchau:  65%|██████▍   | 20/31 [01:18<00:36,  3.28s/it]longchau:  68%|██████▊   | 21/31 [01:22<00:37,  3.77s/it]longchau:  71%|███████   | 22/31 [01:27<00:35,  3.91s/it]longchau:  74%|███████▍  | 23/31 [01:31<00:31,  3.95s/it]longchau:  77%|███████▋  | 24/31 [01:35<00:28,  4.05s/it]longchau:  81%|████████  | 25/31 [01:39<00:24,  4.14s/it]longchau:  84%|████████▍ | 26/31 [01:43<00:19,  3.98s/it]longchau:  87%|████████▋ | 27/31 [01:47<00:15,  3.97s/it]longchau:  90%|█████████ | 28/31 [01:48<00:09,  3.23s/it]longchau:  94%|█████████▎| 29/31 [01:52<00:06,  3.28s/it]longchau:  97%|█████████▋| 30/31 [01:56<00:03,  3.56s/it]longchau: 100%|██████████| 31/31 [02:00<00:00,  3.82s/it]longchau: 100%|██████████| 31/31 [02:00<00:00,  3.90s/it]
+2026-05-22 20:42:26 | INFO     | spider.longchau | Đã đóng Selenium driver.
+2026-05-22 20:42:26 | INFO     | file_handler | Saved 11 records → /home/hoanganh/workspace/CrawlData/data/checkpoint/longchau_batch_0002.json
+2026-05-22 20:42:26 | INFO     | spider.longchau | Hoàn thành LongChau: 31 records
+2026-05-22 20:42:26 | INFO     | file_handler | Saved 31 records → /home/hoanganh/workspace/CrawlData/data/raw/longchau/data.json
+2026-05-22 20:42:26 | INFO     | medicine_repository | Đã chèn 31/31 records vào DB
+2026-05-22 20:42:26 | INFO     | main | [longchau] Hoàn thành: 31 cào | 31 chèn DB
+2026-05-22 20:42:26 | INFO     | main | Xuất processed data...
+2026-05-22 20:42:26 | INFO     | main | Tổng: 4644 | Sau dedup: 4644
+2026-05-22 20:42:27 | INFO     | file_handler | Saved 4644 records → /home/hoanganh/workspace/CrawlData/data/processed/merged/all_dedup.json
+2026-05-22 20:42:27 | INFO     | file_handler | Saved 4644 records → /home/hoanganh/workspace/CrawlData/data/processed/merged/all_dedup.csv
+2026-05-22 20:42:27 | INFO     | file_handler | Saved 1973 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/thuocbietduoc_clean.json
+2026-05-22 20:42:27 | INFO     | file_handler | Saved 1973 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/thuocbietduoc_clean.csv
+2026-05-22 20:42:27 | INFO     | main |   thuocbietduoc: 1973 records
+2026-05-22 20:42:27 | INFO     | file_handler | Saved 164 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/longchau_clean.json
+2026-05-22 20:42:27 | INFO     | file_handler | Saved 164 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/longchau_clean.csv
+2026-05-22 20:42:27 | INFO     | main |   longchau: 164 records
+2026-05-22 20:42:27 | INFO     | file_handler | Saved 2000 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/vinmec_clean.json
+2026-05-22 20:42:28 | INFO     | file_handler | Saved 2000 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/vinmec_clean.csv
+2026-05-22 20:42:28 | INFO     | main |   vinmec: 2000 records
+2026-05-22 20:42:28 | INFO     | file_handler | Saved 507 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/suckhoedoisong_clean.json
+2026-05-22 20:42:28 | INFO     | file_handler | Saved 507 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/suckhoedoisong_clean.csv
+2026-05-22 20:42:28 | INFO     | main |   suckhoedoisong: 507 records
+2026-05-22 20:42:28 | INFO     | main | Export hoàn thành → /home/hoanganh/workspace/CrawlData/data/processed
+2026-05-22 20:42:28 | INFO     | main | Tổng đã chèn DB: 31
+
+==================================================
+  THỐNG KÊ DATABASE
+==================================================
+
+Nguồn                  Số records
+----------------------------------
+longchau                      164
+suckhoedoisong                507
+thuocbietduoc               1,973
+vinmec                      2,000
+----------------------------------
+TỔNG                        4,644
+
+Chất lượng field (records có nội dung):
+  active_ingredient       1,841 ( 39.6%)  ███████
+  drug_class                133 (  2.9%)  
+  indication              1,501 ( 32.3%)  ██████
+  dosage                  1,689 ( 36.4%)  ███████
+  adverse_effect            576 ( 12.4%)  ██
+  contraindication          472 ( 10.2%)  ██
+  description             2,673 ( 57.6%)  ███████████
+
