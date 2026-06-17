@@ -196,7 +196,9 @@
         <option value="no_llm">Chưa có gợi ý LLM</option>
       </select>
       <button id="btn-prev">← Trước</button>
-      <span id="pos-label">-/-</span>
+      <input id="pos-input" type="number" min="1" title="Nhập số câu rồi Enter để nhảy tới"
+        style="width:60px;text-align:center;padding:5px 6px;">
+      <span id="pos-total" style="font-size:0.85rem;opacity:0.85;">/0</span>
       <button id="btn-next">Sau →</button>
       <button id="btn-save" class="primary">Lưu &amp; tiếp</button>
       <button id="btn-save-stay">Lưu</button>
@@ -372,7 +374,9 @@ function diffSuggested(llm, confirmed) {
 
 function updatePosLabel() {
   const n = state.ids.length;
-  $('pos-label').textContent = n ? `${state.index + 1}/${n}` : '0/0';
+  $('pos-input').value = n ? state.index + 1 : 0;
+  $('pos-input').max   = n;
+  $('pos-total').textContent = `/${n}`;
 }
 
 function renderSchema() {
@@ -685,6 +689,17 @@ $('btn-prev').onclick = async () => {
 $('btn-next').onclick = async () => {
   if (state.index < state.ids.length - 1) { state.index++; await loadSentence(); }
 };
+$('pos-input').addEventListener('keydown', async (e) => {
+  if (e.key !== 'Enter') return;
+  const n = state.ids.length;
+  const val = parseInt($('pos-input').value, 10);
+  if (!isNaN(val) && val >= 1 && val <= n) {
+    state.index = val - 1;
+    await loadSentence();
+  } else {
+    updatePosLabel(); // reset về giá trị hợp lệ
+  }
+});
 $('filter').onchange = async () => {
   state.index = 0;
   await loadIds();
