@@ -91,6 +91,18 @@ ENTITY_TYPES: list[EntityType] = [
         description="Chỉ số xét nghiệm / đo lường lâm sàng",
         examples=["huyết áp 130/80 mmHg", "glucose 7.2 mmol/L", "nhiệt độ 38.5°C"],
     ),
+    EntityType(
+        name="PK_METRIC",
+        level="flat",
+        description="Chỉ số dược động học / dược lực học",
+        examples=["Cmax", "AUC", "Tmax", "t1/2"],
+    ),
+    EntityType(
+        name="ENZYME_OR_TARGET",
+        level="flat",
+        description="Enzyme, protein đích hoặc hệ enzyme chuyển hóa/đích tác dụng",
+        examples=["cytochrom P450 3A4", "HMG-CoA reductase", "ACE", "COX-2"],
+    ),
 
     # ── NESTED entities ────────────────────────────────────────────────────
     EntityType(
