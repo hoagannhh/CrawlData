@@ -21,7 +21,6 @@ Mỗi dòng trong corpus_clean.jsonl:
 """
 
 import json
-import os
 import re
 import sqlite3
 import unicodedata
@@ -131,7 +130,7 @@ def is_medical_sentence(sent: str) -> bool:
     return bool(MEDICAL_RE.search(sent))
 
 
-def is_useful_doc(name: str, source: str) -> bool:
+def is_useful_doc(name: str) -> bool:
     """Lọc bỏ tài liệu không phải nội dung y tế (tin tức hành chính...)."""
     if SKIP_TITLE_RE.search(name or ""):
         return False
@@ -156,10 +155,12 @@ def main():
         "total_docs": len(rows),
         "skipped_docs": 0,
         "total_sentences": 0,
+        "duplicate_sentences": 0,
         "medical_sentences": 0,
         "by_source": {},
     }
 
+    seen_texts: set[str] = set()
     written = 0
     with open(OUT_CORPUS, "w", encoding="utf-8") as fout:
         for row in rows:
@@ -168,13 +169,14 @@ def main():
             name    = row["name"] or ""
 
             # Lọc tài liệu rác
-            if not is_useful_doc(name, source):
+            if not is_useful_doc(name):
                 stats["skipped_docs"] += 1
                 continue
 
             if source not in stats["by_source"]:
                 stats["by_source"][source] = {
-                    "docs": 0, "sentences": 0, "medical_sentences": 0
+                    "docs": 0, "sentences": 0, "medical_sentences": 0,
+                    "duplicate_sentences": 0,
                 }
 
             text     = clean_text(row["description"])
@@ -197,6 +199,14 @@ def main():
 
                 stats["total_sentences"] += 1
                 stats["by_source"][source]["sentences"] += 1
+
+                # Bỏ qua câu trùng lặp (so sánh exact sau khi strip)
+                dedup_key = sent.strip()
+                if dedup_key in seen_texts:
+                    stats["duplicate_sentences"] += 1
+                    stats["by_source"][source]["duplicate_sentences"] += 1
+                    continue
+                seen_texts.add(dedup_key)
 
                 is_med = is_medical_sentence(sent)
                 if is_med:
@@ -224,17 +234,20 @@ def main():
     print("=" * 55)
     print("  KẾT QUẢ BƯỚC 1 — LÀM SẠCH CORPUS")
     print("=" * 55)
+    unique = stats["total_sentences"] - stats["duplicate_sentences"]
     print(f"  Tài liệu đầu vào   : {stats['total_docs']:,}")
     print(f"  Tài liệu bỏ qua    : {stats['skipped_docs']:,}")
-    print(f"  Câu tổng           : {stats['total_sentences']:,}")
-    print(f"  Câu y tế           : {stats['medical_sentences']:,}")
-    print(f"  Tỉ lệ câu y tế     : {stats['medical_sentences']/max(stats['total_sentences'],1)*100:.1f}%")
+    print(f"  Câu tổng (trước dedup) : {stats['total_sentences']:,}")
+    print(f"  Câu trùng lặp bỏ đi   : {stats['duplicate_sentences']:,}")
+    print(f"  Câu duy nhất (output)  : {unique:,}")
+    print(f"  Trong đó câu y tế      : {stats['medical_sentences']:,}")
+    print(f"  Tỉ lệ câu y tế         : {stats['medical_sentences']/max(unique,1)*100:.1f}%")
     print()
-    print(f"  {'Nguồn':<20} {'Docs':>6} {'Câu':>8} {'Câu y tế':>10} {'Tỉ lệ':>7}")
-    print("  " + "-" * 55)
+    print(f"  {'Nguồn':<20} {'Docs':>6} {'Câu':>8} {'Trùng':>7} {'Duy nhất':>9} {'Y tế':>7}")
+    print("  " + "-" * 63)
     for src, s in stats["by_source"].items():
-        pct = s["medical_sentences"] / max(s["sentences"], 1) * 100
-        print(f"  {src:<20} {s['docs']:>6,} {s['sentences']:>8,} {s['medical_sentences']:>10,} {pct:>6.0f}%")
+        uniq = s["sentences"] - s["duplicate_sentences"]
+        print(f"  {src:<20} {s['docs']:>6,} {s['sentences']:>8,} {s['duplicate_sentences']:>7,} {uniq:>9,} {s['medical_sentences']:>7,}")
     print()
     print(f"  Output: {OUT_CORPUS}")
     print(f"  Stats : {OUT_STATS}")

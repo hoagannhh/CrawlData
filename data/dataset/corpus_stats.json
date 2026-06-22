@@ -2,27 +2,32 @@
   "total_docs": 4409,
   "skipped_docs": 22,
   "total_sentences": 105819,
-  "medical_sentences": 86867,
+  "duplicate_sentences": 11319,
+  "medical_sentences": 79100,
   "by_source": {
     "longchau": {
       "docs": 164,
       "sentences": 383,
-      "medical_sentences": 348
+      "medical_sentences": 343,
+      "duplicate_sentences": 6
     },
     "thuocbietduoc": {
       "docs": 1864,
       "sentences": 10297,
-      "medical_sentences": 9254
+      "medical_sentences": 5439,
+      "duplicate_sentences": 4189
     },
     "vinmec": {
       "docs": 1988,
       "sentences": 81124,
-      "medical_sentences": 66561
+      "medical_sentences": 62748,
+      "duplicate_sentences": 6843
     },
     "suckhoedoisong": {
       "docs": 371,
       "sentences": 14015,
-      "medical_sentences": 10704
+      "medical_sentences": 10570,
+      "duplicate_sentences": 281
     }
   }
 }
