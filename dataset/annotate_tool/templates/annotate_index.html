@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Annotation Tool — PharmaVi-NER</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f0f13;color:#e2e8f0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── Top bar ── */
+#topbar{display:flex;align-items:center;gap:10px;padding:7px 16px;background:#1a1a2e;border-bottom:1px solid #2d2d44;flex-shrink:0}
+#topbar h1{font-size:14px;font-weight:700;color:#7c83fd}
+.pill{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600}
+.p-total{background:#2d2d44;color:#94a3b8}
+.p-done{background:#1a3a2a;color:#4ade80}
+.p-pend{background:#2a2a1a;color:#fbbf24}
+.p-user{background:#1e2a3a;color:#7dd3fc}
+.spacer{flex:1}
+select{background:#2d2d44;border:1px solid #3d3d5c;color:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;cursor:pointer}
+#progress-bar{height:3px;background:#2d2d44;flex-shrink:0}
+#progress-fill{height:100%;background:linear-gradient(90deg,#7c83fd,#4ade80);width:0%;transition:width .4s}
+
+/* ── Legend ── */
+#legend{display:flex;flex-wrap:wrap;gap:5px;padding:5px 16px;background:#13131f;border-bottom:1px solid #2d2d44;flex-shrink:0}
+.leg{font-size:10px;padding:1px 7px;border-radius:10px;font-weight:600;cursor:pointer;user-select:none;transition:filter .15s}
+.leg:hover{filter:brightness(1.3)}
+.leg.selected{box-shadow:0 0 0 2px #fff4}
+
+/* ── Layout ── */
+#main{display:flex;flex:1;overflow:hidden}
+
+/* ── Sentence list ── */
+#lp{width:280px;border-right:1px solid #2d2d44;display:flex;flex-direction:column;flex-shrink:0}
+#lp-top{padding:6px 10px;background:#16162a;border-bottom:1px solid #2d2d44;display:flex;align-items:center;gap:8px;flex-shrink:0}
+#lp-top select{flex:1}
+#lp-count{font-size:10px;color:#475569;white-space:nowrap}
+#lp-sc{flex:1;overflow-y:auto}
+.li{padding:6px 10px;border-bottom:1px solid #1a1a2a;cursor:pointer;transition:background .1s}
+.li:hover{background:#1c1c30}
+.li.active{background:#252545}
+.li.done{opacity:.5}
+.li-id{font-size:9px;color:#475569;font-family:monospace}
+.li-txt{font-size:11px;color:#cbd5e1;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li-tag{font-size:9px;margin-top:2px}
+.tag-done{color:#4ade80}
+.tag-pend{color:#fbbf24}
+#load-more{padding:8px;text-align:center;font-size:11px;color:#7c83fd;cursor:pointer;border-top:1px solid #2d2d44}
+#load-more:hover{background:#16162a}
+
+/* ── Main panel ── */
+#rp{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#rp-empty{flex:1;display:flex;align-items:center;justify-content:center;color:#475569;font-size:13px}
+#rp-content{display:none;flex:1;flex-direction:column;overflow:hidden}
+
+/* Sentence area */
+#sent-area{padding:16px 20px;background:#16162a;border-bottom:1px solid #2d2d44;flex-shrink:0}
+#sent-meta{font-size:10px;color:#475569;display:flex;gap:12px;margin-bottom:8px}
+#sent-meta b{color:#64748b}
+#sent-hint{font-size:11px;color:#94a3b8;margin-bottom:8px;padding:5px 10px;background:#1e1e38;border-radius:5px;border-left:3px solid #7c83fd}
+
+/* The sentence text — plain, selectable */
+#sent-text{
+  font-size:15px;line-height:2;color:#f1f5f9;
+  user-select:text;cursor:text;
+  padding:10px 12px;
+  background:#1e1e2e;border-radius:6px;
+  border:1px solid #2d2d44;
+  min-height:48px;
+  white-space:pre-wrap;word-break:break-word;
+}
+#sent-text mark{
+  border-radius:3px;padding:0 2px;cursor:pointer;
+  border-bottom:2px solid currentColor;
+}
+#sent-text mark:hover::after{
+  content:' ✕';font-size:10px;opacity:.7;
+}
+
+/* Entity list */
+#ent-area{flex:1;overflow-y:auto;padding:12px 20px}
+#ent-area h3{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+#ent-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.chip-del{background:none;border:none;color:inherit;cursor:pointer;font-size:14px;opacity:.5;padding:0;line-height:1}
+.chip-del:hover{opacity:1}
+#no-ent{color:#475569;font-size:12px;font-style:italic}
+
+/* Action bar */
+#act-bar{padding:10px 20px;background:#16162a;border-top:1px solid #2d2d44;display:flex;align-items:center;gap:8px;flex-shrink:0}
+#act-bar button{padding:7px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s}
+#act-bar button:hover{opacity:.85}
+#act-bar button:disabled{opacity:.3;cursor:not-allowed}
+#btn-save{background:#1a5a35;color:#4ade80}
+#btn-skip{background:#2d2d44;color:#94a3b8}
+#btn-clear{background:#3a1a1a;color:#f87171}
+#btn-undo{background:#2a2a3a;color:#a5b4fc}
+#btn-prev{background:#2d2d44;color:#94a3b8;padding:7px 11px}
+#btn-next-ann{background:#2d2d44;color:#94a3b8;padding:7px 11px}
+.key{font-size:9px;color:inherit;opacity:.5;margin-left:3px}
+#nav-info{font-size:11px;color:#475569;margin-left:auto}
+#export-btn{padding:5px 12px;background:#1a2a3a;color:#7dd3fc;border:1px solid #2d4a6a;border-radius:5px;font-size:11px;cursor:pointer}
+#export-btn:hover{background:#1e3a5a}
+
+/* ── Type picker popup ── */
+#picker{display:none;position:fixed;z-index:999;background:#1c1c30;border:1px solid #3d3d5c;border-radius:10px;padding:10px;box-shadow:0 8px 40px #000c;min-width:200px}
+#picker-label{font-size:10px;color:#64748b;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #2d2d44}
+#picker-sel{font-size:11px;color:#94a3b8;margin-bottom:6px;background:#13131f;padding:4px 8px;border-radius:4px;font-family:monospace;word-break:break-all}
+#picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;max-height:260px;overflow-y:auto}
+.ptype{padding:5px 8px;border:none;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;text-align:left;font-family:monospace;transition:filter .1s}
+.ptype:hover{filter:brightness(1.3)}
+#picker-cancel{width:100%;margin-top:6px;padding:4px;background:#2d2d44;border:none;color:#94a3b8;border-radius:5px;font-size:11px;cursor:pointer}
+#picker-cancel:hover{background:#3d3d5c}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>✏️ Annotation Tool</h1>
+  <span class="pill p-total" id="s-total">–</span>
+  <span class="pill p-done"  id="s-done">✓ 0</span>
+  <span class="pill p-pend"  id="s-pend">⏳ 0</span>
+  <span class="pill p-user"  id="s-user">👤 –</span>
+  <div class="spacer"></div>
+  <a href="/api/export" id="export-btn">⬇ Export JSONL</a>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div id="legend"></div>
+
+<div id="main">
+  <!-- List -->
+  <div id="lp">
+    <div id="lp-top">
+      <select id="filter-sel">
+        <option value="pending">Chưa gán nhãn</option>
+        <option value="done">Đã xong</option>
+        <option value="all">Tất cả</option>
+      </select>
+      <select id="source-sel">
+        <option value="">Mọi nguồn</option>
+        <option value="vinmec">Vinmec</option>
+        <option value="thuocbietduoc">Thuốc Biệt Dược</option>
+        <option value="suckhoedoisong">Sức Khỏe Đời Sống</option>
+        <option value="longchau">Long Châu</option>
+      </select>
+      <span id="lp-count">–</span>
+    </div>
+    <div id="lp-sc"></div>
+    <div id="load-more" style="display:none">Tải thêm…</div>
+  </div>
+
+  <!-- Detail -->
+  <div id="rp">
+    <div id="rp-empty">← Chọn câu để bắt đầu gán nhãn</div>
+    <div id="rp-content">
+      <div id="sent-area">
+        <div id="sent-meta">
+          <span><b>ID:</b> <span id="d-id"></span></span>
+          <span><b>Nguồn:</b> <span id="d-src"></span></span>
+          <span id="d-medical" style="display:none"><b>Y tế:</b> ✓</span>
+        </div>
+        <div id="sent-hint">💡 Bôi đen text → chọn loại entity. Click vào chip để xoá.</div>
+        <div id="sent-text" spellcheck="false"></div>
+      </div>
+
+      <div id="ent-area">
+        <h3>Entities <span id="ent-count" style="color:#94a3b8;font-weight:400">(0)</span>
+          <span style="color:#475569;font-size:10px;font-weight:400">— click entity để xoá</span>
+        </h3>
+        <div id="ent-chips"><span id="no-ent">Chưa có entity nào.</span></div>
+      </div>
+
+      <div id="act-bar">
+        <button id="btn-prev">◀</button>
+        <button id="btn-next-ann">▶</button>
+        <button id="btn-save">✓ Lưu &amp; Tiếp <span class="key">Enter</span></button>
+        <button id="btn-skip">Bỏ qua <span class="key">S</span></button>
+        <button id="btn-clear">✕ Xoá hết</button>
+        <button id="btn-undo">↩ Hoàn tác <span class="key">Ctrl+Z</span></button>
+        <span id="nav-info"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Type picker -->
+<div id="picker">
+  <div id="picker-label">Chọn loại entity:</div>
+  <div id="picker-sel"></div>
+  <div id="picker-grid"></div>
+  <button id="picker-cancel">Huỷ</button>
+</div>
+
+<script>
+const PALETTE     = {{ palette | tojson }};
+const VALID_TYPES = {{ valid_types | tojson }};
+
+// ── State ──────────────────────────────────────────────────────────────────────
+const S = {
+  filter: 'pending', source: '',
+  items: [], total: 0, page: 1,
+  activeId: null, activeText: '',
+  entities: [],           // current working entities
+  history: [],            // for undo: array of entity snapshots
+  selectedType: null,     // quick-select type from legend
+};
+
+// ── Init ───────────────────────────────────────────────────────────────────────
+(async () => {
+  buildLegend();
+  buildPicker();
+  const me = await fetch('/api/me').then(r => r.json());
+  document.getElementById('s-user').textContent = '👤 ' + me.user;
+  await loadStats();
+  await loadList();
+})();
+
+// ── Legend (click để quick-select type) ───────────────────────────────────────
+function buildLegend() {
+  const el = document.getElementById('legend');
+  for (const [t, c] of Object.entries(PALETTE)) {
+    const s = document.createElement('span');
+    s.className = 'leg';
+    s.textContent = t;
+    s.dataset.type = t;
+    s.style.cssText = `background:${c}22;color:${c};border:1px solid ${c}44`;
+    s.addEventListener('click', () => {
+      const already = S.selectedType === t;
+      S.selectedType = already ? null : t;
+      document.querySelectorAll('.leg').forEach(l => l.classList.remove('selected'));
+      if (!already) s.classList.add('selected');
+    });
+    el.appendChild(s);
+  }
+}
+
+// ── Type picker popup ──────────────────────────────────────────────────────────
+let _pickerCb = null;
+
+function buildPicker() {
+  const grid = document.getElementById('picker-grid');
+  for (const t of VALID_TYPES) {
+    const c = PALETTE[t] || '#888';
+    const btn = document.createElement('button');
+    btn.className = 'ptype';
+    btn.textContent = t;
+    btn.style.cssText = `background:${c}22;color:${c};border:1px solid ${c}44`;
+    btn.addEventListener('click', () => { const cb = _pickerCb; hidePicker(); cb && cb(t); });
+    grid.appendChild(btn);
+  }
+  document.getElementById('picker-cancel').addEventListener('click', hidePicker);
+}
+
+function showPicker(x, y, selText, cb) {
+  _pickerCb = cb;
+  document.getElementById('picker-sel').textContent = `"${selText}"`;
+  const p = document.getElementById('picker');
+  const maxX = window.innerWidth  - 220;
+  const maxY = window.innerHeight - 340;
+  p.style.cssText = `display:block;left:${Math.min(x,maxX)}px;top:${Math.min(y,maxY)}px`;
+}
+function hidePicker() {
+  document.getElementById('picker').style.display = 'none';
+  _pickerCb = null;
+}
+document.addEventListener('mousedown', e => {
+  if (!document.getElementById('picker').contains(e.target)) hidePicker();
+}, true);
+
+// ── Stats ──────────────────────────────────────────────────────────────────────
+async function loadStats() {
+  const d = await fetch('/api/stats').then(r => r.json());
+  document.getElementById('s-total').textContent = `${d.total.toLocaleString()} câu`;
+  document.getElementById('s-done').textContent  = `✓ ${d.done.toLocaleString()}`;
+  document.getElementById('s-pend').textContent  = `⏳ ${d.pending.toLocaleString()}`;
+  document.getElementById('progress-fill').style.width =
+    `${(d.done / Math.max(d.total, 1) * 100).toFixed(1)}%`;
+}
+
+// ── List ───────────────────────────────────────────────────────────────────────
+async function loadList(reset = true) {
+  if (reset) { S.page = 1; S.items = []; }
+  const qs = new URLSearchParams({
+    filter: S.filter, source: S.source, page: S.page, limit: 60
+  });
+  const d = await fetch('/api/list?' + qs).then(r => r.json());
+  S.total = d.total;
+  S.items = reset ? d.items : [...S.items, ...d.items];
+  renderList();
+  document.getElementById('lp-count').textContent = S.total.toLocaleString();
+  document.getElementById('load-more').style.display =
+    S.items.length < S.total ? '' : 'none';
+}
+
+function renderList() {
+  const wrap = document.getElementById('lp-sc');
+  wrap.innerHTML = '';
+  for (const item of S.items) {
+    const d = document.createElement('div');
+    d.className = 'li' + (item.id === S.activeId ? ' active' : '') +
+                  (item.done ? ' done' : '');
+    d.dataset.id = item.id;
+    d.innerHTML = `
+      <div class="li-id">${item.id}</div>
+      <div class="li-txt">${esc(item.text)}</div>
+      <div class="li-tag ${item.done ? 'tag-done' : 'tag-pend'}">
+        ${item.done ? '✓ Đã gán nhãn' : '⏳ Chưa'}
+      </div>`;
+    d.addEventListener('click', () => openRecord(item.id));
+    wrap.appendChild(d);
+  }
+}
+
+// ── Open record ────────────────────────────────────────────────────────────────
+async function openRecord(rid) {
+  S.activeId = rid;
+  renderList();
+
+  const d = await fetch(`/api/record/${rid}`).then(r => r.json());
+  S.activeText = d.text;
+  S.entities   = d.entities ? JSON.parse(JSON.stringify(d.entities)) : [];
+  S.history    = [];
+
+  document.getElementById('rp-empty').style.display   = 'none';
+  document.getElementById('rp-content').style.display = 'flex';
+  document.getElementById('d-id').textContent  = d.id;
+  document.getElementById('d-src').textContent = d.source;
+  document.getElementById('d-medical').style.display = d.is_medical ? '' : 'none';
+
+  renderSentence();
+  renderChips();
+  updateNavInfo();
+}
+
+// ── Render sentence with highlights ───────────────────────────────────────────
+function renderSentence() {
+  const el   = document.getElementById('sent-text');
+  const text = S.activeText;
+  const flat = new Set(["DRUG_NAME","DOSE_NUM","FREQ","ROUTE","DISEASE",
+                        "SYMPTOM","BODY_PART","PATHOGEN","LAB_VALUE"]);
+  const spans = S.entities
+    .filter(e => flat.has(e.type))
+    .sort((a, b) => a.start - b.start);
+
+  // Merge overlapping
+  const merged = []; let last = 0;
+  for (const sp of spans) {
+    if (sp.start >= last) { merged.push(sp); last = sp.end; }
+  }
+
+  let html = '', cur = 0;
+  for (const sp of merged) {
+    const c = PALETTE[sp.type] || '#ccc';
+    const idx = S.entities.indexOf(
+      S.entities.find(e => e.start===sp.start && e.end===sp.end && e.type===sp.type)
+    );
+    html += esc(text.slice(cur, sp.start));
+    html += `<mark style="background:${c}33;color:${c};border-bottom:2px solid ${c}" `+
+            `data-idx="${idx}" title="${sp.type}">${esc(text.slice(sp.start, sp.end))}</mark>`;
+    cur = sp.end;
+  }
+  html += esc(text.slice(cur));
+  el.innerHTML = html;
+
+  // Click mark → delete entity
+  el.querySelectorAll('mark').forEach(m => {
+    m.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      const idx = parseInt(m.dataset.idx);
+      pushHistory();
+      S.entities.splice(idx, 1);
+      renderSentence();
+      renderChips();
+    });
+  });
+}
+
+// ── Render entity chips ────────────────────────────────────────────────────────
+function renderChips() {
+  document.getElementById('ent-count').textContent = `(${S.entities.length})`;
+  const wrap = document.getElementById('ent-chips');
+  if (!S.entities.length) {
+    wrap.innerHTML = '<span id="no-ent">Chưa có entity nào.</span>';
+    return;
+  }
+  wrap.innerHTML = '';
+  const sorted = [...S.entities].sort((a, b) => a.start - b.start);
+  sorted.forEach((e, i) => {
+    const c = PALETTE[e.type] || '#888';
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.style.cssText = `background:${c}22;color:${c};border:1px solid ${c}44`;
+    chip.innerHTML =
+      `<span style="font-size:10px;opacity:.7">${e.type}</span> ` +
+      `<b>${esc(e.text)}</b>` +
+      `<button class="chip-del" title="Xoá">✕</button>`;
+    chip.querySelector('.chip-del').addEventListener('click', () => {
+      pushHistory();
+      const realIdx = S.entities.findIndex(
+        x => x.start===e.start && x.end===e.end && x.type===e.type
+      );
+      if (realIdx >= 0) S.entities.splice(realIdx, 1);
+      renderSentence();
+      renderChips();
+    });
+    wrap.appendChild(chip);
+  });
+}
+
+// ── Text selection → entity ────────────────────────────────────────────────────
+function getPlainOffset(container, node, offset) {
+  let pos = 0;
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    if (walker.currentNode === node) return pos + offset;
+    pos += walker.currentNode.textContent.length;
+  }
+  return pos;
+}
+
+document.getElementById('sent-text').addEventListener('mouseup', e => {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+
+  const container = document.getElementById('sent-text');
+  const range     = sel.getRangeAt(0);
+  const start     = getPlainOffset(container, range.startContainer, range.startOffset);
+  const end       = getPlainOffset(container, range.endContainer,   range.endOffset);
+  const selText   = S.activeText.slice(start, end);
+
+  if (start >= end || !selText.trim()) return;
+
+  sel.removeAllRanges();
+
+  // Nếu đã chọn type từ legend → thêm luôn không cần popup
+  if (S.selectedType) {
+    addEntity(start, end, S.selectedType, selText);
+    return;
+  }
+
+  showPicker(e.clientX + 8, e.clientY + 8, selText, (type) => {
+    addEntity(start, end, type, selText);
+  });
+});
+
+function addEntity(start, end, type, text) {
+  // Kiểm tra trùng
+  const dup = S.entities.find(e => e.start===start && e.end===end && e.type===type);
+  if (dup) return;
+  pushHistory();
+  S.entities.push({ start, end, type, text });
+  S.entities.sort((a, b) => a.start - b.start || a.end - b.end);
+  renderSentence();
+  renderChips();
+}
+
+// ── History / Undo ─────────────────────────────────────────────────────────────
+function pushHistory() {
+  S.history.push(JSON.parse(JSON.stringify(S.entities)));
+  if (S.history.length > 30) S.history.shift();
+}
+function undo() {
+  if (!S.history.length) return;
+  S.entities = S.history.pop();
+  renderSentence();
+  renderChips();
+}
+
+// ── Save ───────────────────────────────────────────────────────────────────────
+async function saveAndNext(status = 'done') {
+  if (!S.activeId) return;
+  await fetch(`/api/save/${S.activeId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ entities: S.entities, status }),
+  });
+  const item = S.items.find(i => i.id === S.activeId);
+  if (item) item.done = true;
+  renderList();
+  await loadStats();
+
+  // Tự động sang câu tiếp chưa gán nhãn
+  const qs = new URLSearchParams({ after: S.activeId, source: S.source });
+  const nx = await fetch('/api/next?' + qs).then(r => r.json());
+  if (nx.id) openRecord(nx.id);
+}
+
+// ── Nav ────────────────────────────────────────────────────────────────────────
+async function updateNavInfo() {
+  const idx = S.items.findIndex(i => i.id === S.activeId);
+  document.getElementById('nav-info').textContent =
+    idx >= 0 ? `${idx + 1} / ${S.total}` : '';
+}
+
+function navRelative(delta) {
+  const idx = S.items.findIndex(i => i.id === S.activeId);
+  const newIdx = idx + delta;
+  if (newIdx >= 0 && newIdx < S.items.length) openRecord(S.items[newIdx].id);
+}
+
+// ── Keyboard ───────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'Enter')             { e.preventDefault(); saveAndNext('done'); }
+  if (e.key === 's' || e.key === 'S') saveAndNext('skipped');
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+  if (e.key === 'ArrowRight')        navRelative(1);
+  if (e.key === 'ArrowLeft')         navRelative(-1);
+  if (e.key === 'Escape')            { S.selectedType = null; document.querySelectorAll('.leg').forEach(l => l.classList.remove('selected')); hidePicker(); }
+});
+
+// ── Buttons ────────────────────────────────────────────────────────────────────
+document.getElementById('btn-save').addEventListener('click',     () => saveAndNext('done'));
+document.getElementById('btn-skip').addEventListener('click',     () => saveAndNext('skipped'));
+document.getElementById('btn-clear').addEventListener('click',    () => { pushHistory(); S.entities=[]; renderSentence(); renderChips(); });
+document.getElementById('btn-undo').addEventListener('click',     undo);
+document.getElementById('btn-prev').addEventListener('click',     () => navRelative(-1));
+document.getElementById('btn-next-ann').addEventListener('click', () => navRelative(1));
+document.getElementById('filter-sel').addEventListener('change',  e => { S.filter=e.target.value; loadList(); });
+document.getElementById('source-sel').addEventListener('change',  e => { S.source=e.target.value; loadList(); });
+document.getElementById('load-more').addEventListener('click',    () => { S.page++; loadList(false); });
+
+// ── Util ───────────────────────────────────────────────────────────────────────
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>

@@ -5138,3 +5138,62 @@
 2026-05-22 22:03:31 | INFO     | main | Tổng đã chèn DB: 4517
 2026-05-23 17:19:29 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
 2026-06-06 21:46:21 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
+2026-06-27 17:19:58 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
+2026-06-27 17:20:07 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
+2026-06-27 17:20:14 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
+2026-06-27 17:20:14 | INFO     | main | Xuất processed data...
+2026-06-27 17:20:14 | INFO     | main | Tổng: 4517 | Sau dedup: 4517
+2026-06-27 17:20:15 | INFO     | file_handler | Saved 4517 records → /home/hoanganh/workspace/CrawlData/data/processed/merged/all_dedup.json
+2026-06-27 17:20:15 | INFO     | file_handler | Saved 4517 records → /home/hoanganh/workspace/CrawlData/data/processed/merged/all_dedup.csv
+2026-06-27 17:20:15 | INFO     | file_handler | Saved 1972 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/thuocbietduoc_clean.json
+2026-06-27 17:20:15 | INFO     | file_handler | Saved 1972 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/thuocbietduoc_clean.csv
+2026-06-27 17:20:15 | INFO     | main |   thuocbietduoc: 1972 records
+2026-06-27 17:20:15 | INFO     | file_handler | Saved 164 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/longchau_clean.json
+2026-06-27 17:20:24 | INFO     | file_handler | Saved 164 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/longchau_clean.csv
+2026-06-27 17:20:24 | INFO     | main |   longchau: 164 records
+2026-06-27 17:20:24 | INFO     | file_handler | Saved 381 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/suckhoedoisong_clean.json
+2026-06-27 17:20:24 | INFO     | file_handler | Saved 381 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/suckhoedoisong_clean.csv
+2026-06-27 17:20:24 | INFO     | main |   suckhoedoisong: 381 records
+2026-06-27 17:20:15 | INFO     | file_handler | Saved 2000 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/vinmec_clean.json
+2026-06-27 17:20:15 | INFO     | file_handler | Saved 2000 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/vinmec_clean.csv
+2026-06-27 17:20:15 | INFO     | main |   vinmec: 2000 records
+2026-06-27 17:20:15 | INFO     | main | Export hoàn thành → /home/hoanganh/workspace/CrawlData/data/processed
+2026-06-27 17:20:45 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
+2026-06-27 17:28:11 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
+2026-06-27 17:28:12 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
+2026-06-27 17:28:12 | INFO     | main | Xuất processed data...
+2026-06-27 17:28:12 | INFO     | main | Tổng: 4517 | Sau dedup: 4517
+2026-06-27 17:28:12 | INFO     | file_handler | Saved 4517 records → /home/hoanganh/workspace/CrawlData/data/processed/merged/all_dedup.json
+2026-06-27 17:28:13 | INFO     | file_handler | Saved 4517 records → /home/hoanganh/workspace/CrawlData/data/processed/merged/all_dedup.csv
+2026-06-27 17:28:13 | INFO     | file_handler | Saved 381 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/suckhoedoisong_clean.json
+2026-06-27 17:28:13 | INFO     | file_handler | Saved 381 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/suckhoedoisong_clean.csv
+2026-06-27 17:28:13 | INFO     | main |   suckhoedoisong: 381 records
+2026-06-27 17:28:13 | INFO     | file_handler | Saved 164 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/longchau_clean.json
+2026-06-27 17:28:13 | INFO     | file_handler | Saved 164 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/longchau_clean.csv
+2026-06-27 17:28:13 | INFO     | main |   longchau: 164 records
+2026-06-27 17:28:13 | INFO     | file_handler | Saved 1972 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/thuocbietduoc_clean.json
+2026-06-27 17:28:13 | INFO     | file_handler | Saved 1972 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/thuocbietduoc_clean.csv
+2026-06-27 17:28:13 | INFO     | main |   thuocbietduoc: 1972 records
+2026-06-27 17:28:13 | INFO     | file_handler | Saved 2000 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/vinmec_clean.json
+2026-06-27 17:28:13 | INFO     | file_handler | Saved 2000 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/vinmec_clean.csv
+2026-06-27 17:28:13 | INFO     | main |   vinmec: 2000 records
+2026-06-27 17:28:13 | INFO     | main | Export hoàn thành → /home/hoanganh/workspace/CrawlData/data/processed
+2026-06-27 17:31:30 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
+2026-06-27 17:31:30 | INFO     | db_connect | Database khởi tạo tại: /home/hoanganh/workspace/CrawlData/data/pharma.db
+2026-06-27 17:31:30 | INFO     | main | Xuất processed data...
+2026-06-27 17:31:30 | INFO     | main | Tổng: 4517 | Sau dedup: 4517
+2026-06-27 17:31:31 | INFO     | file_handler | Saved 4517 records → /home/hoanganh/workspace/CrawlData/data/processed/merged/all_dedup.json
+2026-06-27 17:31:31 | INFO     | file_handler | Saved 4517 records → /home/hoanganh/workspace/CrawlData/data/processed/merged/all_dedup.csv
+2026-06-27 17:31:31 | INFO     | file_handler | Saved 164 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/longchau_clean.json
+2026-06-27 17:31:31 | INFO     | file_handler | Saved 164 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/longchau_clean.csv
+2026-06-27 17:31:31 | INFO     | main |   longchau: 164 records
+2026-06-27 17:31:31 | INFO     | file_handler | Saved 1972 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/thuocbietduoc_clean.json
+2026-06-27 17:31:31 | INFO     | file_handler | Saved 1972 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/thuocbietduoc_clean.csv
+2026-06-27 17:31:31 | INFO     | main |   thuocbietduoc: 1972 records
+2026-06-27 17:31:31 | INFO     | file_handler | Saved 2000 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/vinmec_clean.json
+2026-06-27 17:31:41 | INFO     | file_handler | Saved 2000 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/vinmec_clean.csv
+2026-06-27 17:31:41 | INFO     | main |   vinmec: 2000 records
+2026-06-27 17:31:31 | INFO     | file_handler | Saved 381 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/suckhoedoisong_clean.json
+2026-06-27 17:31:31 | INFO     | file_handler | Saved 381 records → /home/hoanganh/workspace/CrawlData/data/processed/by_source/suckhoedoisong_clean.csv
+2026-06-27 17:31:31 | INFO     | main |   suckhoedoisong: 381 records
+2026-06-27 17:31:31 | INFO     | main | Export hoàn thành → /home/hoanganh/workspace/CrawlData/data/processed

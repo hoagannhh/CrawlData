@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Review — PharmaVi-NER</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0f0f13;color:#e2e8f0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* topbar */
+#topbar{display:flex;align-items:center;gap:10px;padding:7px 14px;background:#1a1a2e;border-bottom:1px solid #2d2d44;flex-shrink:0;flex-wrap:wrap}
+#topbar h1{font-size:14px;font-weight:700;color:#7c83fd;white-space:nowrap}
+.pill{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600;white-space:nowrap}
+.p-total{background:#2d2d44;color:#94a3b8}
+.p-ok{background:#1a3a2a;color:#4ade80}
+.p-flag{background:#3a1a1a;color:#f87171}
+.p-pend{background:#2a2a1a;color:#fbbf24}
+.p-user{background:#1e2a3a;color:#7dd3fc}
+.spacer{flex:1}
+select,input[type=text]{background:#2d2d44;border:1px solid #3d3d5c;color:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px}
+
+/* legend */
+#legend{display:flex;flex-wrap:wrap;gap:5px;padding:6px 14px;background:#13131f;border-bottom:1px solid #2d2d44;flex-shrink:0}
+.leg{font-size:10px;padding:1px 7px;border-radius:10px;font-weight:600;cursor:default}
+
+/* layout */
+#main{display:flex;flex:1;overflow:hidden}
+
+/* list */
+#lp{width:300px;border-right:1px solid #2d2d44;display:flex;flex-direction:column;flex-shrink:0}
+#lp-hd{padding:6px 10px;background:#16162a;border-bottom:1px solid #2d2d44;font-size:11px;color:#64748b;flex-shrink:0}
+#lp-sc{flex:1;overflow-y:auto}
+.li{padding:7px 10px;border-bottom:1px solid #1e1e30;cursor:pointer;transition:background .12s}
+.li:hover{background:#1e1e38}
+.li.active{background:#252545}
+.li-id{font-size:10px;color:#475569;font-family:monospace}
+.li-txt{font-size:11px;color:#cbd5e1;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li-meta{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap}
+.badge{font-size:10px;padding:1px 6px;border-radius:10px}
+.b-ok{background:#1a3a2a;color:#4ade80}
+.b-flag{background:#3a1a1a;color:#f87171}
+.b-pend{background:#2a2a1a;color:#fbbf24}
+.b-src{background:#1e2a3a;color:#7dd3fc}
+.b-ent{background:#2a1e3a;color:#c4b5fd}
+.b-who{background:#1e2a1a;color:#86efac;font-size:9px}
+#load-more{padding:8px;text-align:center;font-size:11px;color:#7c83fd;cursor:pointer;border-top:1px solid #2d2d44}
+#load-more:hover{background:#1e1e30}
+
+/* detail */
+#dp{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#dp-empty{flex:1;display:flex;align-items:center;justify-content:center;color:#475569;font-size:13px}
+#dp-content{display:none;flex:1;flex-direction:column;overflow:hidden}
+
+/* sentence card */
+#sc{padding:14px 18px;background:#16162a;border-bottom:1px solid #2d2d44;flex-shrink:0}
+#sc-meta{font-size:10px;color:#475569;margin-bottom:6px;display:flex;gap:12px;flex-wrap:wrap}
+#sc-meta b{color:#64748b}
+#sc-text{font-size:14px;line-height:1.9;color:#e2e8f0;user-select:text;cursor:text;min-height:2em}
+#sc-text mark{border-radius:3px;padding:1px 3px;cursor:pointer}
+#sc-text mark:hover{filter:brightness(1.2)}
+
+/* edit mode hint */
+#edit-hint{display:none;font-size:11px;color:#fbbf24;margin-top:6px;padding:4px 8px;background:#2a2200;border-radius:4px}
+
+/* entity section */
+#es{flex:1;overflow-y:auto;padding:10px 18px}
+#es h3{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+#es h3 span{color:#94a3b8}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:4px 7px;color:#475569;font-size:10px;border-bottom:1px solid #2d2d44}
+td{padding:4px 7px;border-bottom:1px solid #1e1e30;vertical-align:middle}
+.et{padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;font-family:monospace}
+.eoff{font-size:10px;color:#475569;font-family:monospace}
+.edel{background:none;border:none;color:#475569;cursor:pointer;font-size:14px;padding:0 4px;display:none}
+.edel:hover{color:#f87171}
+tr:hover .edel{display:inline}
+#no-ent{color:#475569;font-size:12px;font-style:italic}
+
+/* action bar */
+#ab{padding:10px 18px;background:#16162a;border-top:1px solid #2d2d44;display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
+#ab button{padding:6px 14px;border:none;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer}
+#ab button:hover{opacity:.85}
+#ab button:disabled{opacity:.35;cursor:not-allowed}
+#btn-ok{background:#1a6640;color:#4ade80}
+#btn-flag{background:#661a1a;color:#f87171}
+#btn-edit{background:#2a2a4a;color:#a5b4fc}
+#btn-edit.active{background:#3a3a6a;color:#818cf8}
+#btn-save{background:#1a4a2a;color:#6ee7b7;display:none}
+#btn-cancel{background:#3a2a1a;color:#fbbf24;display:none}
+#btn-skip{background:#2d2d44;color:#94a3b8}
+#btn-prev,#btn-next{background:#2d2d44;color:#94a3b8;padding:6px 10px}
+#note-inp{flex:1;background:#2d2d44;border:1px solid #3d3d5c;color:#e2e8f0;border-radius:5px;padding:5px 9px;font-size:12px;min-width:100px}
+#note-inp::placeholder{color:#475569}
+#nav-pos{font-size:11px;color:#475569;white-space:nowrap}
+.key{font-size:9px;color:#475569;margin-left:3px}
+
+/* type picker popup */
+#picker{display:none;position:fixed;z-index:1000;background:#1e1e38;border:1px solid #3d3d5c;border-radius:8px;padding:8px;box-shadow:0 8px 32px #000a;min-width:180px}
+#picker h4{font-size:11px;color:#64748b;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #2d2d44}
+#picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.ptype{padding:4px 8px;border:none;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;text-align:left;font-family:monospace}
+.ptype:hover{filter:brightness(1.3)}
+#picker-cancel{width:100%;margin-top:6px;padding:4px;background:#2d2d44;border:none;color:#94a3b8;border-radius:4px;font-size:11px;cursor:pointer}
+#picker-cancel:hover{background:#3d3d5c}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>PharmaVi-NER Review</h1>
+  <span class="pill p-total" id="s-total">–</span>
+  <span class="pill p-ok"    id="s-ok">✓ 0</span>
+  <span class="pill p-flag"  id="s-flag">⚑ 0</span>
+  <span class="pill p-pend"  id="s-pend">⏳ 0</span>
+  <span class="pill p-user"  id="s-user">👤 –</span>
+  <div class="spacer"></div>
+  <select id="filter-sel">
+    <option value="all">Tất cả</option>
+    <option value="pending">Chưa review</option>
+    <option value="verified">Đã xác nhận</option>
+    <option value="flagged">Cần sửa</option>
+  </select>
+  <select id="source-sel">
+    <option value="">Mọi nguồn</option>
+    <option value="vinmec">Vinmec</option>
+    <option value="thuocbietduoc">Thuốc Biệt Dược</option>
+    <option value="suckhoedoisong">Sức Khỏe Đời Sống</option>
+    <option value="longchau">Long Châu</option>
+  </select>
+  <input id="search-box" type="text" placeholder="Tìm ID / text…" style="width:160px">
+</div>
+
+<div id="legend"></div>
+
+<div id="main">
+  <div id="lp">
+    <div id="lp-hd"><span id="list-count">0 câu</span></div>
+    <div id="lp-sc"></div>
+    <div id="load-more" style="display:none">Tải thêm…</div>
+  </div>
+
+  <div id="dp">
+    <div id="dp-empty">← Chọn một câu để xem</div>
+    <div id="dp-content">
+      <div id="sc">
+        <div id="sc-meta">
+          <span><b>ID:</b> <span id="d-id"></span></span>
+          <span><b>Nguồn:</b> <span id="d-src"></span></span>
+          <span><b>Doc:</b> <span id="d-doc"></span></span>
+          <span id="d-who" style="display:none"><b>Sửa bởi:</b> <span id="d-who-val"></span></span>
+        </div>
+        <div id="sc-text"></div>
+        <div id="edit-hint">✏️ Chế độ sửa: bôi đen text → chọn loại entity. Click vào entity để xoá.</div>
+      </div>
+      <div id="es">
+        <h3>Entities <span id="ent-count">(0)</span></h3>
+        <div id="ent-body"></div>
+      </div>
+      <div id="ab">
+        <button id="btn-prev">◀</button>
+        <button id="btn-next">▶</button>
+        <button id="btn-ok">✓ Đúng <span class="key">V</span></button>
+        <button id="btn-flag">⚑ Sửa <span class="key">F</span></button>
+        <button id="btn-edit">✏️ Chỉnh sửa</button>
+        <button id="btn-save">💾 Lưu chỉnh sửa</button>
+        <button id="btn-cancel">✕ Huỷ</button>
+        <input id="note-inp" type="text" placeholder="Ghi chú…">
+        <button id="btn-skip">Bỏ qua <span class="key">S</span></button>
+        <span id="nav-pos"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Entity type picker popup -->
+<div id="picker">
+  <h4>Chọn loại entity</h4>
+  <div id="picker-grid"></div>
+  <button id="picker-cancel">Huỷ</button>
+</div>
+
+<script>
+const PALETTE     = {{ palette | tojson }};
+const VALID_TYPES = {{ valid_types | tojson }};
+
+// Tính plain-text offset từ DOM selection (bỏ qua HTML tags)
+function getPlainOffset(container, node, nodeOffset) {
+  let offset = 0;
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    if (walker.currentNode === node) return offset + nodeOffset;
+    offset += walker.currentNode.textContent.length;
+  }
+  return offset;
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+const S = {
+  filter: 'all', source: '', items: [], total: 0, page: 1,
+  activeId: null, editMode: false,
+  editEntities: [],   // working copy in edit mode
+  origText: '',
+};
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
+(async () => {
+  buildLegend();
+  buildPicker();
+  const me = await fetch('/api/me').then(r => r.json());
+  document.getElementById('s-user').textContent = '👤 ' + me.user;
+  await loadStats();
+  await loadList();
+})();
+
+// ── Legend ────────────────────────────────────────────────────────────────────
+function buildLegend() {
+  const el = document.getElementById('legend');
+  for (const [t, c] of Object.entries(PALETTE)) {
+    const s = document.createElement('span');
+    s.className = 'leg';
+    s.textContent = t;
+    s.style.cssText = `background:${c}22;color:${c};border:1px solid ${c}55`;
+    el.appendChild(s);
+  }
+}
+
+// ── Type picker ───────────────────────────────────────────────────────────────
+let _pickerCallback = null;
+
+function buildPicker() {
+  const grid = document.getElementById('picker-grid');
+  for (const t of VALID_TYPES) {
+    const c = PALETTE[t] || '#888';
+    const btn = document.createElement('button');
+    btn.className = 'ptype';
+    btn.textContent = t;
+    btn.style.cssText = `background:${c}22;color:${c};border:1px solid ${c}44`;
+    btn.addEventListener('click', () => {
+      hidePicker();
+      if (_pickerCallback) _pickerCallback(t);
+    });
+    grid.appendChild(btn);
+  }
+  document.getElementById('picker-cancel').addEventListener('click', hidePicker);
+}
+
+function showPicker(x, y, callback) {
+  _pickerCallback = callback;
+  const p = document.getElementById('picker');
+  p.style.cssText = `display:block;left:${Math.min(x, window.innerWidth-200)}px;top:${Math.min(y, window.innerHeight-300)}px`;
+}
+function hidePicker() {
+  document.getElementById('picker').style.display = 'none';
+  _pickerCallback = null;
+}
+document.addEventListener('click', e => {
+  if (!document.getElementById('picker').contains(e.target)) hidePicker();
+}, true);
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+async function loadStats() {
+  const d = await fetch('/api/stats').then(r => r.json());
+  document.getElementById('s-total').textContent = `${d.total.toLocaleString()} câu`;
+  document.getElementById('s-ok').textContent    = `✓ ${d.verified.toLocaleString()}`;
+  document.getElementById('s-flag').textContent  = `⚑ ${d.flagged.toLocaleString()}`;
+  document.getElementById('s-pend').textContent  = `⏳ ${d.pending.toLocaleString()}`;
+}
+
+// ── List ──────────────────────────────────────────────────────────────────────
+async function loadList(reset = true) {
+  if (reset) { S.page = 1; S.items = []; }
+  const qs = new URLSearchParams({ filter: S.filter, source: S.source, page: S.page, limit: 60 });
+  const d  = await fetch('/api/list?' + qs).then(r => r.json());
+  S.total  = d.total;
+  S.items  = reset ? d.items : [...S.items, ...d.items];
+  renderList();
+  document.getElementById('list-count').textContent = `${S.total.toLocaleString()} câu`;
+  document.getElementById('load-more').style.display = S.items.length < S.total ? '' : 'none';
+}
+
+function renderList() {
+  const q    = document.getElementById('search-box').value.toLowerCase();
+  const wrap = document.getElementById('lp-sc');
+  wrap.innerHTML = '';
+  const filtered = q
+    ? S.items.filter(i => i.id.includes(q) || i.text.toLowerCase().includes(q))
+    : S.items;
+  for (const item of filtered) {
+    const d = document.createElement('div');
+    d.className = 'li' + (item.id === S.activeId ? ' active' : '');
+    d.dataset.id = item.id;
+    const badgeSt = `<span class="badge b-${item.status === 'verified' ? 'ok' : item.status === 'flagged' ? 'flag' : 'pend'}">${stLabel(item.status)}</span>`;
+    const who     = item.updated_by ? `<span class="badge b-who">${esc(item.updated_by)}</span>` : '';
+    d.innerHTML   = `
+      <div class="li-id">${item.id}</div>
+      <div class="li-txt">${esc(item.text)}</div>
+      <div class="li-meta">
+        ${badgeSt}
+        <span class="badge b-src">${item.source}</span>
+        <span class="badge b-ent">${item.entity_count} ent</span>
+        ${who}
+      </div>`;
+    d.addEventListener('click', () => openRecord(item.id));
+    wrap.appendChild(d);
+  }
+}
+
+function stLabel(s) {
+  return s === 'verified' ? '✓ Đúng' : s === 'flagged' ? '⚑ Sửa' : '⏳';
+}
+
+// ── Detail ────────────────────────────────────────────────────────────────────
+let _currentRecord = null;
+
+async function openRecord(rid) {
+  if (S.editMode) exitEditMode(false);
+  S.activeId = rid;
+  renderList();
+
+  const d = await fetch(`/api/record/${rid}`).then(r => r.json());
+  _currentRecord  = d;
+  S.origText      = d.text;
+
+  document.getElementById('dp-empty').style.display   = 'none';
+  document.getElementById('dp-content').style.display = 'flex';
+  document.getElementById('d-id').textContent  = d.id;
+  document.getElementById('d-src').textContent = d.source;
+  document.getElementById('d-doc').textContent = d.doc_id;
+  document.getElementById('note-inp').value    = d.note || '';
+
+  const whoEl = document.getElementById('d-who');
+  if (d.updated_by) {
+    document.getElementById('d-who-val').textContent = d.updated_by;
+    whoEl.style.display = '';
+  } else {
+    whoEl.style.display = 'none';
+  }
+
+  document.getElementById('sc-text').innerHTML = d.highlighted;
+  renderEntities(d.entities, d.text, false);
+  updateNav(d.id);
+  loadStats();
+}
+
+function renderEntities(entities, text, editMode) {
+  document.getElementById('ent-count').textContent = `(${entities.length})`;
+  const body = document.getElementById('ent-body');
+  if (!entities.length) {
+    body.innerHTML = '<p id="no-ent">Không có entity nào.</p>';
+    return;
+  }
+  let html = `<table><thead><tr><th>#</th><th>Type</th><th>Text</th><th>Offset</th>${editMode ? '<th></th>' : ''}</tr></thead><tbody>`;
+  entities.forEach((e, i) => {
+    const c = PALETTE[e.type] || '#888';
+    html += `<tr data-idx="${i}">
+      <td style="color:#475569">${i + 1}</td>
+      <td><span class="et" style="background:${c}22;color:${c}">${e.type}</span></td>
+      <td style="color:#e2e8f0">${esc(e.text)}</td>
+      <td class="eoff">[${e.start}:${e.end}]</td>
+      ${editMode ? `<td><button class="edel" onclick="deleteEntity(${i})" title="Xoá">✕</button></td>` : ''}
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  body.innerHTML = html;
+  if (editMode) {
+    body.querySelectorAll('.edel').forEach(b => b.style.display = 'inline');
+  }
+}
+
+// ── Edit mode ─────────────────────────────────────────────────────────────────
+function enterEditMode() {
+  S.editMode = true;
+  if (!_currentRecord) return;
+
+  S.editEntities = JSON.parse(JSON.stringify(_currentRecord.entities));
+
+  document.getElementById('btn-edit').style.display   = 'none';
+  document.getElementById('btn-save').style.display   = '';
+  document.getElementById('btn-cancel').style.display = '';
+  document.getElementById('btn-ok').disabled   = true;
+  document.getElementById('btn-flag').disabled = true;
+  document.getElementById('edit-hint').style.display  = '';
+
+  // Hiển thị plain text (không có HTML tags) để selection offset chính xác
+  const el = document.getElementById('sc-text');
+  el.textContent = S.origText;
+  el.style.whiteSpace = 'pre-wrap';
+
+  renderEntities(S.editEntities, S.origText, true);
+  el.addEventListener('mouseup', onTextSelect);
+}
+
+// Highlight nhẹ trong edit mode: dùng background trên text node, không thêm text phụ
+function refreshEditHighlight() {
+  const el   = document.getElementById('sc-text');
+  const text = S.origText;
+  const flat = new Set(["DRUG_NAME","DOSE_NUM","FREQ","ROUTE","DISEASE",
+                        "SYMPTOM","BODY_PART","PATHOGEN","LAB_VALUE"]);
+  const spans = S.editEntities
+    .filter(e => flat.has(e.type))
+    .sort((a,b) => a.start - b.start);
+
+  // Dùng innerHTML với highlight đơn giản, KHÔNG có <sup> để tránh lỗi offset
+  let html = '', cur = 0;
+  for (const sp of spans) {
+    if (sp.start < cur) continue;
+    const c = PALETTE[sp.type] || '#ccc';
+    html += esc(text.slice(cur, sp.start));
+    html += `<mark style="background:${c}44;border-bottom:2px solid ${c};border-radius:2px;padding:0 1px" title="${sp.type}">${esc(text.slice(sp.start, sp.end))}</mark>`;
+    cur = sp.end;
+  }
+  html += esc(text.slice(cur));
+  el.innerHTML = html;
+  // Sau khi innerHTML, cần re-attach listener vì innerHTML xóa event listeners trên text nodes
+  el.removeEventListener('mouseup', onTextSelect);
+  el.addEventListener('mouseup', onTextSelect);
+}
+
+function exitEditMode(save) {
+  S.editMode = false;
+  const el = document.getElementById('sc-text');
+  el.removeEventListener('mouseup', onTextSelect);
+  el.style.whiteSpace = '';
+
+  document.getElementById('btn-edit').style.display   = '';
+  document.getElementById('btn-save').style.display   = 'none';
+  document.getElementById('btn-cancel').style.display = 'none';
+  document.getElementById('btn-ok').disabled   = false;
+  document.getElementById('btn-flag').disabled = false;
+  document.getElementById('edit-hint').style.display  = 'none';
+
+  if (save && S.activeId) {
+    el.innerHTML = buildHighlight(S.origText, S.editEntities);
+    renderEntities(S.editEntities, S.origText, false);
+  } else {
+    openRecord(S.activeId);
+  }
+}
+
+function onTextSelect(e) {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+
+  const text      = S.origText;
+  const container = document.getElementById('sc-text');
+  const range     = sel.getRangeAt(0);
+
+  // Dùng TreeWalker — không còn <sup> trong edit mode nên offset chính xác
+  const start   = getPlainOffset(container, range.startContainer, range.startOffset);
+  const end     = getPlainOffset(container, range.endContainer,   range.endOffset);
+  const selText = text.slice(start, end);
+
+  if (start < 0 || end > text.length || start >= end || !selText.trim()) return;
+
+  sel.removeAllRanges();
+  showPicker(e.clientX, e.clientY, (type) => {
+    S.editEntities.push({ start, end, type, text: selText });
+    S.editEntities.sort((a, b) => a.start - b.start || a.end - b.end);
+    renderEntities(S.editEntities, text, true);
+    // Cập nhật highlight phía trên (vẫn giữ plain text trong edit mode)
+    refreshEditHighlight();
+  });
+}
+
+function deleteEntity(idx) {
+  S.editEntities.splice(idx, 1);
+  renderEntities(S.editEntities, S.origText, true);
+  const hl = buildHighlight(S.origText, S.editEntities);
+  document.getElementById('sc-text').innerHTML = hl;
+}
+
+function buildHighlight(text, entities) {
+  const flat_types = new Set(["DRUG_NAME","DOSE_NUM","FREQ","ROUTE","DISEASE",
+                               "SYMPTOM","BODY_PART","PATHOGEN","LAB_VALUE"]);
+  const spans = entities
+    .filter(e => flat_types.has(e.type))
+    .sort((a, b) => a.start - b.start || b.end - a.end);
+
+  const merged = []; let lastEnd = 0;
+  for (const sp of spans) {
+    if (sp.start >= lastEnd) { merged.push(sp); lastEnd = sp.end; }
+  }
+  let r = '', cur = 0;
+  for (const sp of merged) {
+    const c = PALETTE[sp.type] || '#ccc';
+    r += esc(text.slice(cur, sp.start));
+    r += `<mark style="background:${c}33;border:1px solid ${c};border-radius:3px;padding:1px 3px" title="${sp.type}">${esc(text.slice(sp.start, sp.end))}<sup style="font-size:9px;opacity:.8;margin-left:2px">${sp.type}</sup></mark>`;
+    cur = sp.end;
+  }
+  r += esc(text.slice(cur));
+  return r;
+}
+
+// ── Review actions ────────────────────────────────────────────────────────────
+async function submitReview(status) {
+  if (!S.activeId) return;
+  const note        = document.getElementById('note-inp').value.trim();
+  const corrections = S.editMode ? S.editEntities : null;
+  await fetch(`/api/review/${S.activeId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status, note, corrections }),
+  });
+  const item = S.items.find(i => i.id === S.activeId);
+  if (item) item.status = status;
+  renderList();
+  await loadStats();
+  if (S.editMode) exitEditMode(true);
+  const nextId = document.getElementById('btn-next').dataset.id;
+  if (nextId) openRecord(nextId);
+}
+
+// ── Nav ───────────────────────────────────────────────────────────────────────
+async function updateNav(rid) {
+  const qs = new URLSearchParams({ filter: S.filter, source: S.source, id: rid });
+  const d  = await fetch('/api/nav?' + qs).then(r => r.json());
+  document.getElementById('btn-prev').dataset.id = d.prev || '';
+  document.getElementById('btn-next').dataset.id = d.next || '';
+  document.getElementById('btn-prev').disabled   = !d.prev;
+  document.getElementById('btn-next').disabled   = !d.next;
+  document.getElementById('nav-pos').textContent = `${d.pos} / ${d.total}`;
+}
+
+// ── Keyboard ──────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'v' || e.key === 'V') submitReview('verified');
+  if (e.key === 'f' || e.key === 'F') submitReview('flagged');
+  if (e.key === 's' || e.key === 'S') {
+    const n = document.getElementById('btn-next').dataset.id;
+    if (n) openRecord(n);
+  }
+  if (e.key === 'ArrowRight') { const n = document.getElementById('btn-next').dataset.id; if (n) openRecord(n); }
+  if (e.key === 'ArrowLeft')  { const p = document.getElementById('btn-prev').dataset.id; if (p) openRecord(p); }
+  if (e.key === 'Escape' && S.editMode) exitEditMode(false);
+});
+
+// ── Wire up buttons ───────────────────────────────────────────────────────────
+document.getElementById('btn-ok').addEventListener('click',   () => submitReview('verified'));
+document.getElementById('btn-flag').addEventListener('click', () => submitReview('flagged'));
+document.getElementById('btn-skip').addEventListener('click', () => {
+  const n = document.getElementById('btn-next').dataset.id; if (n) openRecord(n);
+});
+document.getElementById('btn-prev').addEventListener('click', () => {
+  const p = document.getElementById('btn-prev').dataset.id; if (p) openRecord(p);
+});
+document.getElementById('btn-next').addEventListener('click', () => {
+  const n = document.getElementById('btn-next').dataset.id; if (n) openRecord(n);
+});
+document.getElementById('btn-edit').addEventListener('click', enterEditMode);
+document.getElementById('btn-save').addEventListener('click', () => submitReview(_currentRecord?.status || 'pending'));
+document.getElementById('btn-cancel').addEventListener('click', () => exitEditMode(false));
+document.getElementById('filter-sel').addEventListener('change', e => { S.filter = e.target.value; loadList(); });
+document.getElementById('source-sel').addEventListener('change', e => { S.source = e.target.value; loadList(); });
+document.getElementById('search-box').addEventListener('input', renderList);
+document.getElementById('load-more').addEventListener('click', () => { S.page++; loadList(false); });
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
