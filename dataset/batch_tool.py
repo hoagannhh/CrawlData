@@ -137,8 +137,8 @@ def cmd_get(size: int = 100, source: str = "") -> None:
             break
 
     if not pending:
-        print("✓ Không còn câu nào chưa gán nhãn" +
-              (f" (nguồn: {source})" if source else "") + ".")
+        print("[OK] Khong con cau nao chua gan nhan" +
+              (f" (nguon: {source})" if source else "") + ".")
         return
 
     num      = next_batch_num()
@@ -162,19 +162,19 @@ def cmd_get(size: int = 100, source: str = "") -> None:
         for row in rows:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
-    print(f"✓ Đã xuất {len(rows):,} câu → {out_path}")
+    print(f"[OK] Da xuat {len(rows):,} cau -> {out_path}")
     print()
-    print("  Điền entities theo dạng:")
+    print("  Dien entities theo dang:")
     print('  {"start":0,"end":11,"type":"DRUG_NAME","text":"Amoxicillin"}')
     print()
-    print(f"  Khi xong, chạy:")
+    print("  Khi xong, chay:")
     print(f"  python3 dataset/batch_tool.py import {out_path}")
 
 
 def cmd_import(path_str: str) -> None:
     path = Path(path_str)
     if not path.exists():
-        print(f"✗ Không tìm thấy file: {path}")
+        print(f"[ERROR] Khong tim thay file: {path}")
         sys.exit(1)
 
     corpus   = load_corpus()
@@ -190,17 +190,17 @@ def cmd_import(path_str: str) -> None:
             try:
                 r = json.loads(line)
             except json.JSONDecodeError as exc:
-                print(f"  ✗ Dòng {lineno}: JSON lỗi — {exc}")
+                print(f"  [ERROR] Dong {lineno}: JSON loi - {exc}")
                 continue
 
             rid = r.get("id", "")
             if rid in done_ids:
-                print(f"  ⚠ {rid}: đã có trong checkpoint, bỏ qua")
+                print(f"  [SKIP] {rid}: da co trong checkpoint, bo qua")
                 continue
 
             orig = cmap.get(rid)
             if not orig:
-                print(f"  ✗ {rid}: không tìm thấy trong corpus, bỏ qua")
+                print(f"  [ERROR] {rid}: khong tim thay trong corpus, bo qua")
                 continue
 
             text      = orig["text"]
@@ -208,7 +208,7 @@ def cmd_import(path_str: str) -> None:
             valid     = [e for e in raw_ents if validate_entity(e, text)]
             bad       = len(raw_ents) - len(valid)
             if bad:
-                print(f"  ⚠ {rid}: {bad} entity lỗi offset bị loại")
+                print(f"  [WARN] {rid}: {bad} entity loi offset bi loai")
 
             records.append({
                 "id":            rid,
@@ -220,15 +220,15 @@ def cmd_import(path_str: str) -> None:
             })
 
     if not records:
-        print("✗ Không có dòng hợp lệ nào để import.")
+        print("[ERROR] Khong co dong hop le nao de import.")
         sys.exit(1)
 
     append_annotations(records)
-    print(f"✓ Đã import {len(records):,} câu → {CHECKPOINT}")
 
     done_path = path.with_stem(path.stem + "_done")
     path.rename(done_path)
-    print(f"✓ Đổi tên batch → {done_path.name}")
+    print(f"[OK] Da import {len(records):,} cau -> {CHECKPOINT}")
+    print(f"[OK] Doi ten batch -> {done_path.name}")
 
 
 # ── Entry point ────────────────────────────────────────────────────────────────
