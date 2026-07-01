@@ -231,6 +231,87 @@ def cmd_import(path_str: str) -> None:
     print(f"[OK] Doi ten batch -> {done_path.name}")
 
 
+def cmd_update(path_str: str) -> None:
+    """Ghi đè entities cho các câu đã import (sửa lại sau khi import)."""
+    path = Path(path_str)
+    if not path.exists():
+        print(f"[ERROR] Khong tim thay file: {path}")
+        sys.exit(1)
+
+    corpus = load_corpus()
+    cmap   = {r["id"]: r for r in corpus}
+
+    # Đọc file cần update
+    updates: dict[str, dict] = {}
+    with open(path, encoding="utf-8") as f:
+        for lineno, line in enumerate(f, 1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError as exc:
+                print(f"  [ERROR] Dong {lineno}: JSON loi - {exc}")
+                continue
+            rid = r.get("id", "")
+            orig = cmap.get(rid)
+            if not orig:
+                print(f"  [ERROR] {rid}: khong tim thay trong corpus, bo qua")
+                continue
+            text     = orig["text"]
+            raw_ents = r.get("entities", [])
+            valid    = [e for e in raw_ents if validate_entity(e, text)]
+            bad      = len(raw_ents) - len(valid)
+            if bad:
+                print(f"  [WARN] {rid}: {bad} entity loi offset bi loai")
+            updates[rid] = {
+                "id":           rid,
+                "doc_id":       orig.get("doc_id"),
+                "source":       orig.get("source"),
+                "text":         text,
+                "entities":     valid,
+                "annotated_at": datetime.now(timezone.utc).isoformat(),
+            }
+
+    if not updates:
+        print("[ERROR] Khong co dong hop le nao.")
+        sys.exit(1)
+
+    # Đọc checkpoint, ghi đè các ID có trong updates
+    existing: list[dict] = []
+    if CHECKPOINT.exists():
+        with open(CHECKPOINT, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    existing.append(json.loads(line))
+
+    merged = []
+    updated_count = 0
+    ids_seen = set()
+    for rec in existing:
+        rid = rec["id"]
+        if rid in updates and rid not in ids_seen:
+            merged.append(updates[rid])
+            ids_seen.add(rid)
+            updated_count += 1
+        elif rid not in ids_seen:
+            merged.append(rec)
+            ids_seen.add(rid)
+
+    # Thêm các ID mới chưa có trong checkpoint
+    for rid, rec in updates.items():
+        if rid not in ids_seen:
+            merged.append(rec)
+            ids_seen.add(rid)
+
+    with open(CHECKPOINT, "w", encoding="utf-8") as f:
+        for rec in merged:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
+    print(f"[OK] Da cap nhat {updated_count} cau trong {CHECKPOINT}")
+
+
 # ── Entry point ────────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -255,6 +336,10 @@ def main() -> None:
 
     if args[0] == "import" and len(args) >= 2:
         cmd_import(args[1])
+        return
+
+    if args[0] == "update" and len(args) >= 2:
+        cmd_update(args[1])
         return
 
     print(__doc__)
